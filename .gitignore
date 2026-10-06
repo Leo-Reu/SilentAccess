@@ -106,5 +106,5 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ss]ceneDependencyCache*
 
 # Third-party / Asset Store assets
-/[Aa]ssets/08.ThirdParty/
-/[Aa]ssets/08.ThirdParty.meta
+/Assets/08.ThirdParty/
+/Assets/08.ThirdParty.meta
