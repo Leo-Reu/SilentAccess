@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-public class StateMachine<T>
+﻿public class StateMachine<T>
 {
     private T owner;
 
     public IState<T> CurrentState { get; private set; }
+    public IState<T> PreviousState { get; private set; }
 
     public StateMachine(T owner)
     {
@@ -24,6 +24,7 @@ public class StateMachine<T>
 
         CurrentState?.Exit(owner);
 
+        PreviousState = CurrentState;
         CurrentState = nextState;
 
         CurrentState.Enter(owner);

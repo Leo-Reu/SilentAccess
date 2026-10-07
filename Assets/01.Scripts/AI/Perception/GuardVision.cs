@@ -18,10 +18,16 @@ public class GuardVision : MonoBehaviour
 
     public float Detection => detection;
     public bool IsPlayerVisible => isPlayerVisible;
-    public bool IsFullyDetected => guardData != null && detection >= guardData.detectionThreshold;
+    public bool IsPartiallyDetected => guardData != null && detection >= guardData.suspiciousThreshold; // 부분적 감지
+    public bool IsFullyDetected => guardData != null && detection >= guardData.detectionThreshold;      // 완전 감지
+    public Transform Player => player;
+
 
     private void Start()
     {
+        detection = 0f;
+        isPlayerVisible = false;
+
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 
         if (playerObject == null)

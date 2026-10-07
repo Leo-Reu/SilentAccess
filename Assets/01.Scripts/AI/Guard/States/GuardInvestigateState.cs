@@ -14,6 +14,21 @@ public class GuardInvestigateState : IState<GuardController>
 
     public void Update(GuardController owner)
     {
+        if (owner.Vision != null)
+        {
+            if (owner.Vision.IsFullyDetected)
+            {
+                owner.ChangeToChase();
+                return;
+            }
+
+            if (owner.Vision.IsPartiallyDetected)
+            {
+                owner.ChangeToSuspicious();
+                return;
+            }
+        }
+
         if (!arrived)
         {
             if (owner.Agent.pathPending)

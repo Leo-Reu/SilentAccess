@@ -15,6 +15,21 @@ public class GuardPatrolState : IState<GuardController>
 
     public void Update(GuardController owner)
     {
+        if (owner.Vision != null)
+        {
+            if (owner.Vision.IsFullyDetected)
+            {
+                owner.ChangeToChase();
+                return;
+            }
+
+            if (owner.Vision.IsPartiallyDetected)
+            {
+                owner.ChangeToSuspicious();
+                return;
+            }
+        }
+
         if (owner.PatrolRoute == null || owner.PatrolRoute.Count == 0)
         {
             return;
