@@ -7,11 +7,14 @@ public class GuardData : ScriptableObject
     public float patrolSpeed = 2f;
     public float investigateSpeed = 2.5f;
     public float chaseSpeed = 4.5f;
+    public float searchSpeed = 2.5f;
     public float stoppingDistance = 0.2f;
 
     [Header("State")]
     public float patrolWaitTime = 1.5f;
     public float investigateTime = 3f;
+    public float searchTime = 4f;
+    public float lostSightTime = 0.7f;
 
     [Header("Vision")]
     public float visionRange = 12f;

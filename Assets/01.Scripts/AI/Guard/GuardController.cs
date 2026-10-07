@@ -17,8 +17,10 @@ public class GuardController : MonoBehaviour
     private GuardInvestigateState investigateState;
     private GuardSuspiciousState suspiciousState;
     private GuardChaseState chaseState;
+    private GuardSearchState searchState;
 
     private Vector3 investigatePos;
+    private Vector3 lastKnownPos;
     private int patrolIndex;
 
     public NavMeshAgent Agent => agent;
@@ -26,6 +28,7 @@ public class GuardController : MonoBehaviour
     public GuardPatrolRoute PatrolRoute => patrolRoute;
     public GuardVision Vision => vision;
     public Vector3 InvestigatePos => investigatePos;
+    public Vector3 LastKnownPos => lastKnownPos;
 
     private void Awake()
     {
@@ -39,6 +42,7 @@ public class GuardController : MonoBehaviour
         investigateState = new GuardInvestigateState();
         suspiciousState = new GuardSuspiciousState();
         chaseState = new GuardChaseState();
+        searchState = new GuardSearchState();
     }
 
     private void OnEnable()
@@ -101,6 +105,16 @@ public class GuardController : MonoBehaviour
         }
     }
 
+    public void UpdateLastKnownPosition()
+    {
+        if (vision == null || vision.Player == null)
+        {
+            return;
+        }
+
+        lastKnownPos = vision.Player.position;
+    }
+
     public void ChangeToPatrol()
     {
         stateMachine.ChangeState(patrolState);
@@ -125,5 +139,10 @@ public class GuardController : MonoBehaviour
         }
 
         stateMachine.ChangeState(patrolState);
+    }
+
+    public void ChangeToSearch()
+    {
+        stateMachine.ChangeState(searchState);
     }
 }
