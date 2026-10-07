@@ -9,6 +9,7 @@ public class GuardController : MonoBehaviour
 
     private NavMeshAgent agent;
     private GuardHearing hearing;
+    private GuardVision vision;
 
     private StateMachine<GuardController> stateMachine;
 
@@ -18,15 +19,17 @@ public class GuardController : MonoBehaviour
     private Vector3 investigatePos;
     private int patrolIndex;
 
-    public NavMeshAgent Agent => agent;
     public GuardData Data => guardData;
     public GuardPatrolRoute PatrolRoute => patrolRoute;
+    public NavMeshAgent Agent => agent;
+    public GuardVision Vision => vision;
     public Vector3 InvestigatePos => investigatePos;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         hearing = GetComponent<GuardHearing>();
+        vision = GetComponent<GuardVision>();
 
         stateMachine = new StateMachine<GuardController>(this);
 
