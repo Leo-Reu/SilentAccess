@@ -6,6 +6,7 @@ public class GuardData : ScriptableObject
     [Header("Movement")]
     public float patrolSpeed = 2f;
     public float investigateSpeed = 2.5f;
+    public float chaseSpeed = 4.5f;
     public float stoppingDistance = 0.2f;
 
     [Header("State")]
@@ -20,5 +21,6 @@ public class GuardData : ScriptableObject
 
     public float detectionSpeed = 0.7f;
     public float detectionDecreaseSpeed = 0.4f;
+    public float suspiciousThreshold = 0.15f;
     public float detectionThreshold = 1f;
 }

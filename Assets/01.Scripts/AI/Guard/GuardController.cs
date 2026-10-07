@@ -15,13 +15,15 @@ public class GuardController : MonoBehaviour
 
     private GuardPatrolState patrolState;
     private GuardInvestigateState investigateState;
+    private GuardSuspiciousState suspiciousState;
+    private GuardChaseState chaseState;
 
     private Vector3 investigatePos;
     private int patrolIndex;
 
+    public NavMeshAgent Agent => agent;
     public GuardData Data => guardData;
     public GuardPatrolRoute PatrolRoute => patrolRoute;
-    public NavMeshAgent Agent => agent;
     public GuardVision Vision => vision;
     public Vector3 InvestigatePos => investigatePos;
 
@@ -35,11 +37,16 @@ public class GuardController : MonoBehaviour
 
         patrolState = new GuardPatrolState();
         investigateState = new GuardInvestigateState();
+        suspiciousState = new GuardSuspiciousState();
+        chaseState = new GuardChaseState();
     }
 
     private void OnEnable()
     {
-        hearing.OnNoiseHeard += OnNoiseHeard;
+        if (hearing != null)
+        {
+            hearing.OnNoiseHeard += OnNoiseHeard;
+        }
     }
 
     private void Start()
@@ -55,11 +62,19 @@ public class GuardController : MonoBehaviour
 
     private void OnDisable()
     {
-        hearing.OnNoiseHeard -= OnNoiseHeard;
+        if (hearing != null)
+        {
+            hearing.OnNoiseHeard -= OnNoiseHeard;
+        }
     }
 
     private void OnNoiseHeard(NoiseData noiseData)
     {
+        if (stateMachine.CurrentState == suspiciousState || stateMachine.CurrentState == chaseState)
+        {
+            return;
+        }
+
         investigatePos = noiseData.position;
 
         if (stateMachine.CurrentState == investigateState)
@@ -88,6 +103,27 @@ public class GuardController : MonoBehaviour
 
     public void ChangeToPatrol()
     {
+        stateMachine.ChangeState(patrolState);
+    }
+
+    public void ChangeToSuspicious()
+    {
+        stateMachine.ChangeState(suspiciousState);
+    }
+
+    public void ChangeToChase()
+    {
+        stateMachine.ChangeState(chaseState);
+    }
+
+    public void ReturnFromSuspicious()
+    {
+        if (stateMachine.PreviousState == investigateState)
+        {
+            stateMachine.ChangeState(investigateState);
+            return;
+        }
+
         stateMachine.ChangeState(patrolState);
     }
 }
