@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
     private float yVelocity;
     private bool isCrouch;
 
+    public bool IsCrouch => isCrouch;
+    public bool IsRunning => !isCrouch && sprintAction.IsPressed();
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
