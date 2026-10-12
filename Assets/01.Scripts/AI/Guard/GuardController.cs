@@ -79,6 +79,11 @@ public class GuardController : MonoBehaviour
             return;
         }
 
+        if (stateMachine.CurrentState == investigateState && noiseData.type == NoiseType.Footstep)
+        {
+            return;
+        }
+
         investigatePos = noiseData.position;
 
         if (stateMachine.CurrentState == investigateState)
