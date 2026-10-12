@@ -12,6 +12,11 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private float throwForce = 8f;
 
     private PlayerInput playerInput;
+    private PlayerController playerController;
+    private PlayerLook playerLook;
+    private PlayerFootstepNoise footstepNoise;
+
+    private bool canInteract = true;
 
     private InputAction interactAction;
     private InputAction throwAction;
@@ -21,6 +26,9 @@ public class PlayerInteraction : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        playerController = GetComponent<PlayerController>();
+        playerLook = GetComponent<PlayerLook>();
+        footstepNoise = GetComponent<PlayerFootstepNoise>();
 
         interactAction = playerInput.actions["Interact"];
         throwAction = playerInput.actions["Throw"];
@@ -28,6 +36,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (!canInteract)
+        {
+            return;
+        }
+
         if (interactAction.WasPressedThisFrame())
         {
             Interact();
@@ -72,5 +85,28 @@ public class PlayerInteraction : MonoBehaviour
     {
         heldObject.Throw(playerCamera.transform.forward, throwForce);
         heldObject = null;
+    }
+
+    public void SetControlEnabled(bool value)
+    {
+        canInteract = value;
+
+        if (playerController != null)
+        {
+            playerController.enabled = value;
+        }
+
+        if (playerLook != null)
+        {
+            playerLook.enabled = value;
+        }
+
+        if (footstepNoise != null)
+        {
+            footstepNoise.enabled = value;
+        }
+
+        Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !value;
     }
 }
