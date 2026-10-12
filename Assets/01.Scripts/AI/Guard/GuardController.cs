@@ -74,17 +74,27 @@ public class GuardController : MonoBehaviour
 
     private void OnNoiseHeard(NoiseData noiseData)
     {
-        if (stateMachine.CurrentState == suspiciousState || stateMachine.CurrentState == chaseState)
-        {
-            return;
-        }
-
         if (stateMachine.CurrentState == investigateState && noiseData.type == NoiseType.Footstep)
         {
             return;
         }
 
-        investigatePos = noiseData.position;
+        Investigate(noiseData.position);
+    }
+
+    public void OnCCTVDetected(Vector3 detectedPos)
+    {
+        Investigate(detectedPos);
+    }
+
+    private void Investigate(Vector3 targetPos)
+    {
+        if (stateMachine.CurrentState == suspiciousState || stateMachine.CurrentState == chaseState)
+        {
+            return;
+        }
+
+        investigatePos = targetPos;
 
         if (stateMachine.CurrentState == investigateState)
         {
