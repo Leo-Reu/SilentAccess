@@ -12,7 +12,4 @@ public class CCTVData : ScriptableObject
     public float detectionSpeed = 0.8f;
     public float detectionDecreaseSpeed = 0.6f;
     public float detectionThreshold = 1f;
-
-    [Header("Alert")]
-    public float alertRadius = 20f;
 }

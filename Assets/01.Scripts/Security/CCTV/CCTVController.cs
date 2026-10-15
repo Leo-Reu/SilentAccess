@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
 public class CCTVController : MonoBehaviour
 {
@@ -70,7 +71,6 @@ public class CCTVController : MonoBehaviour
 
         Vector3 targetPos = playerController != null ? player.TransformPoint(playerController.center) : player.position;
         Vector3 dir = targetPos - eyePoint.position;
-
         float distance = dir.magnitude;
 
         if (distance > cctvData.visionRange)
@@ -114,7 +114,8 @@ public class CCTVController : MonoBehaviour
             return;
         }
 
-        Vector3 detectedPos = player.position;
+        GuardController closestGuard = null;
+        float closestDistance = float.MaxValue;
 
         foreach (GuardController guard in guards)
         {
@@ -125,12 +126,16 @@ public class CCTVController : MonoBehaviour
 
             float distance = Vector3.Distance(transform.position, guard.transform.position);
 
-            if (distance > cctvData.alertRadius)
+            if (distance < closestDistance)
             {
-                continue;
+                closestDistance = distance;
+                closestGuard = guard;
             }
+        }
 
-            guard.OnCCTVDetected(detectedPos);
+        if (closestGuard != null)
+        {
+            closestGuard.OnCCTVDetected(player.position);
         }
     }
 
@@ -161,8 +166,5 @@ public class CCTVController : MonoBehaviour
 
         Gizmos.DrawLine(eyePoint.position, eyePoint.position + leftDir * cctvData.visionRange);
         Gizmos.DrawLine(eyePoint.position, eyePoint.position + rightDir * cctvData.visionRange);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, cctvData.alertRadius);
     }
 }

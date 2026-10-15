@@ -7,7 +7,7 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
 {
     [Header("CCTV")]
     [SerializeField] private CCTVController[] cctvs;
-    [SerializeField] private float disableDuration = 15f;
+    [SerializeField] private float disableDuration = 10f;
 
     [Header("UI")]
     [SerializeField] private GameObject terminalPanel;
