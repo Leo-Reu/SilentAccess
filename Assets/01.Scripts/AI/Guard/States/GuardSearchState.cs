@@ -7,7 +7,7 @@ public class GuardSearchState : IState<GuardController>
 
     public void Enter(GuardController owner)
     {
-        owner.Agent.speed = owner.Data.searchSpeed;
+        owner.SetMoveSpeed(owner.Data.searchSpeed);
 
         waitTimer = 0f;
         arrived = false;

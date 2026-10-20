@@ -7,7 +7,7 @@ public class GuardInvestigateState : IState<GuardController>
 
     public void Enter(GuardController owner)
     {
-        owner.Agent.speed = owner.Data.investigateSpeed;
+        owner.SetMoveSpeed(owner.Data.investigateSpeed);
 
         UpdateTarget(owner);
     }

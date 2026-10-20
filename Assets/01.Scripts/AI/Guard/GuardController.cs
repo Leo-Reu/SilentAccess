@@ -7,6 +7,13 @@ public class GuardController : MonoBehaviour
     [SerializeField] private GuardData guardData;
     [SerializeField] private GuardPatrolRoute patrolRoute;
 
+    [Header("Security Alert")]
+    [SerializeField] private float alertSpeedMultiplier = 1.2f;
+
+    private float baseMoveSpeed;
+
+    public bool IsAlerted { get; private set; }
+
     private NavMeshAgent agent;
     private GuardHearing hearing;
     private GuardVision vision;
@@ -29,6 +36,13 @@ public class GuardController : MonoBehaviour
     public GuardVision Vision => vision;
     public Vector3 InvestigatePos => investigatePos;
     public Vector3 LastKnownPos => lastKnownPos;
+    public bool CanInvestigate =>
+        isActiveAndEnabled &&
+        agent != null &&
+        agent.isOnNavMesh &&
+        stateMachine != null &&
+        stateMachine.CurrentState != suspiciousState &&
+        stateMachine.CurrentState != chaseState;
 
     private void Awake()
     {
@@ -85,6 +99,38 @@ public class GuardController : MonoBehaviour
     public void OnCCTVDetected(Vector3 detectedPos)
     {
         Investigate(detectedPos);
+    }
+
+    public void OnSecurityAlert(Vector3 alertPos)
+    {
+        Investigate(alertPos);
+    }
+
+    public void SetMoveSpeed(float speed)
+    {
+        baseMoveSpeed = speed;
+        UpdateMoveSpeed();
+    }
+
+    public void SetAlerted()
+    {
+        if (IsAlerted)
+        {
+            return;
+        }
+
+        IsAlerted = true;
+        UpdateMoveSpeed();
+    }
+
+    private void UpdateMoveSpeed()
+    {
+        if (agent == null || !agent.isOnNavMesh)
+        {
+            return;
+        }
+
+        agent.speed = baseMoveSpeed * (IsAlerted ? alertSpeedMultiplier : 1f);
     }
 
     private void Investigate(Vector3 targetPos)
