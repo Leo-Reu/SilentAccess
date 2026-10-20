@@ -102,7 +102,23 @@ public class MainServer : MonoBehaviour, IInteractable
 
         Debug.Log("[MainServer] Data theft completed");
         OnDataStolen?.Invoke();
+
+
     }
+
+#if UNITY_EDITOR
+    public void DebugCompleteDownload()
+    {
+        if (isDataStolen)
+        {
+            return;
+        }
+
+        CompleteDownload();
+        ClosePanel();
+    }
+#endif
+
 
     public void ClosePanel()
     {

@@ -6,7 +6,7 @@ public class GuardChaseState : IState<GuardController>
 
     public void Enter(GuardController owner)
     {
-        owner.Agent.speed = owner.Data.chaseSpeed;
+        owner.SetMoveSpeed(owner.Data.chaseSpeed);
 
         lostSightTimer = 0f;
 

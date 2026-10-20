@@ -6,7 +6,7 @@ public class GuardPatrolState : IState<GuardController>
 
     public void Enter(GuardController owner)
     {
-        owner.Agent.speed = owner.Data.patrolSpeed;
+        owner.SetMoveSpeed(owner.Data.patrolSpeed);
 
         waitTimer = 0f;
 
