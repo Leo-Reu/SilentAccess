@@ -10,6 +10,10 @@ public class GuardController : MonoBehaviour
     [Header("Security Alert")]
     [SerializeField] private float alertSpeedMultiplier = 1.2f;
 
+    [Header("Capture")]
+    [SerializeField] private MissionController missionController;
+    [SerializeField] private float captureDistance = 1.5f;
+
     private float baseMoveSpeed;
 
     public bool IsAlerted { get; private set; }
@@ -205,5 +209,29 @@ public class GuardController : MonoBehaviour
     public void ChangeToSearch()
     {
         stateMachine.ChangeState(searchState);
+    }
+
+    public bool TryCapturePlayer()
+    {
+        if (missionController == null || vision == null || !vision.IsPlayerVisible || vision.Player == null)
+        {
+            return false;
+        }
+
+        if (missionController.CurrentResult != MissionResult.None)
+        {
+            return false;
+        }
+
+        Vector3 dir = vision.Player.position - transform.position;
+        dir.y = 0f;
+
+        if (dir.sqrMagnitude > captureDistance * captureDistance)
+        {
+            return false;
+        }
+
+        missionController.FailMission();
+        return true;
     }
 }
