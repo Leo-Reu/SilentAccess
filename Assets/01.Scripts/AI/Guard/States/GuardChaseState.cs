@@ -24,8 +24,13 @@ public class GuardChaseState : IState<GuardController>
             lostSightTimer = 0f;
 
             owner.UpdateLastKnownPosition();
-            MoveToPlayer(owner);
 
+            if (owner.TryCapturePlayer())
+            {
+                return;
+            }
+
+            MoveToPlayer(owner);
             return;
         }
 
