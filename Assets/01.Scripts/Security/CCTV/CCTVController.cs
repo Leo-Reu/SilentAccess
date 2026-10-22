@@ -14,6 +14,12 @@ public class CCTVController : MonoBehaviour
     [SerializeField] private float detection;
     [SerializeField] private bool isPlayerVisible;
 
+    [Header("Director")]
+    [SerializeField] private AdaptiveSecurityDirector securityDirector;
+
+    [Header("Range Visualizer")]
+    [SerializeField] private CCTVRangeVisualizer rangeVisualizer;
+
     private Transform player;
     private CharacterController playerController;
     private GuardController[] guards;
@@ -53,6 +59,12 @@ public class CCTVController : MonoBehaviour
         if (detection >= cctvData.detectionThreshold && !isAlertSent)
         {
             isAlertSent = true;
+
+            if (securityDirector != null)
+            {
+                securityDirector.ReportCCTV();
+            }
+
             AlertGuards();
         }
 
@@ -119,7 +131,7 @@ public class CCTVController : MonoBehaviour
 
         foreach (GuardController guard in guards)
         {
-            if (guard == null || !guard.isActiveAndEnabled)
+            if (guard == null || !guard.CanInvestigate)
             {
                 continue;
             }
@@ -142,6 +154,11 @@ public class CCTVController : MonoBehaviour
     public void SetDetectionEnabled(bool value)
     {
         isDetectionEnabled = value;
+
+        if (rangeVisualizer != null)
+        {
+            rangeVisualizer.SetVisible(value);
+        }
 
         if (!isDetectionEnabled)
         {

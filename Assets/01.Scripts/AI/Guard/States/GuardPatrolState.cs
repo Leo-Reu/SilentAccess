@@ -47,7 +47,7 @@ public class GuardPatrolState : IState<GuardController>
 
         waitTimer += Time.deltaTime;
 
-        if (waitTimer < owner.Data.patrolWaitTime)
+        if (waitTimer < owner.PatrolWaitDuration)
         {
             return;
         }
