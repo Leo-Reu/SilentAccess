@@ -84,6 +84,47 @@ public class SilentAccessDebugWindow : EditorWindow
         EditorGUILayout.LabelField("Current Phase", phase);
         EditorGUILayout.LabelField("Security Alert", alert);
         EditorGUILayout.LabelField("Data Stolen", stolen);
+
+        AdaptiveSecurityDirector director =
+            Object.FindFirstObjectByType<AdaptiveSecurityDirector>();
+
+        if (director != null)
+        {
+            EditorGUILayout.Space(10);
+
+            EditorGUILayout.LabelField(
+                "Security Pressure",
+                director.Pressure.ToString()
+            );
+
+            EditorGUILayout.LabelField(
+                "Director Level",
+                director.CurrentLevel.ToString()
+            );
+
+            if (GUILayout.Button("Test CCTV Pressure (+2)"))
+            {
+                director.ReportCCTV();
+            }
+        }
+
+        EditorGUILayout.Space(10);
+        GUILayout.Label("Guard AI States", EditorStyles.boldLabel);
+
+        GuardController[] guards = Object.FindObjectsByType<GuardController>(FindObjectsSortMode.None);
+
+        foreach (GuardController guard in guards)
+        {
+            if (guard == null || guard.Vision == null)
+            {
+                continue;
+            }
+
+            EditorGUILayout.LabelField(guard.name, guard.CurrentStateName);
+            EditorGUILayout.LabelField("Player Visible", guard.Vision.IsPlayerVisible.ToString());
+            EditorGUILayout.LabelField("Detection", guard.Vision.Detection.ToString("F2"));
+            EditorGUILayout.Space(5);
+        }
     }
 
     private void DrawTeleport(DebugSceneRefs refs)

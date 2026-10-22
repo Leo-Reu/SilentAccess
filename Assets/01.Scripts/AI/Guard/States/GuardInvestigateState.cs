@@ -47,7 +47,7 @@ public class GuardInvestigateState : IState<GuardController>
 
         waitTimer += Time.deltaTime;
 
-        if (waitTimer >= owner.Data.investigateTime)
+        if (waitTimer >= owner.InvestigateDuration)
         {
             owner.ChangeToPatrol();
         }

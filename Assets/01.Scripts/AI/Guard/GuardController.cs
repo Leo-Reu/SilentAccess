@@ -14,7 +14,11 @@ public class GuardController : MonoBehaviour
     [SerializeField] private MissionController missionController;
     [SerializeField] private float captureDistance = 1.5f;
 
+    [Header("Director")]
+    [SerializeField] private AdaptiveSecurityDirector securityDirector;
+
     private float baseMoveSpeed;
+    private float nextInvestigateNoiseTime;
 
     public bool IsAlerted { get; private set; }
 
@@ -40,6 +44,24 @@ public class GuardController : MonoBehaviour
     public GuardVision Vision => vision;
     public Vector3 InvestigatePos => investigatePos;
     public Vector3 LastKnownPos => lastKnownPos;
+    public string CurrentStateName => stateMachine?.CurrentState?.GetType().Name ?? "None";
+
+    public float PatrolWaitDuration =>
+        guardData.patrolWaitTime *
+        (securityDirector != null
+            ? securityDirector.PatrolWaitMultiplier : 1f);
+
+    public float InvestigateDuration =>
+        guardData.investigateTime *
+        (securityDirector != null
+            ? securityDirector.InvestigateTimeMultiplier : 1f);
+
+    public float SearchDuration =>
+        guardData.searchTime *
+        (securityDirector != null
+            ? securityDirector.SearchTimeMultiplier : 1f);
+
+
     public bool CanInvestigate =>
         isActiveAndEnabled &&
         agent != null &&
@@ -47,6 +69,17 @@ public class GuardController : MonoBehaviour
         stateMachine != null &&
         stateMachine.CurrentState != suspiciousState &&
         stateMachine.CurrentState != chaseState;
+
+    public bool CanAssist =>
+        isActiveAndEnabled &&
+        agent != null &&
+        agent.isOnNavMesh &&
+        stateMachine != null &&
+        stateMachine.CurrentState == patrolState;
+
+    public bool IsChasing =>
+        stateMachine != null &&
+        stateMachine.CurrentState == chaseState;
 
     private void Awake()
     {
@@ -92,13 +125,42 @@ public class GuardController : MonoBehaviour
 
     private void OnNoiseHeard(NoiseData noiseData)
     {
+        if (securityDirector != null)
+        {
+            securityDirector.ReportHeardNoise(noiseData);
+        }
+
+        if (stateMachine.CurrentState == chaseState || stateMachine.CurrentState == suspiciousState)
+        {
+            return;
+        }
+
+        if (stateMachine.CurrentState == searchState)
+        {
+            searchState.UpdateNoiseTarget(this, noiseData.position);
+            return;
+        }
+
         if (stateMachine.CurrentState == investigateState && noiseData.type == NoiseType.Footstep)
         {
+            if (Time.time < nextInvestigateNoiseTime)
+            {
+                return;
+            }
+
+            if (Vector3.Distance(investigatePos, noiseData.position) < guardData.noiseRetargetDistance)
+            {
+                return;
+            }
+
+            nextInvestigateNoiseTime = Time.time + guardData.noiseRetargetInterval;
+            Investigate(noiseData.position);
             return;
         }
 
         Investigate(noiseData.position);
     }
+
 
     public void OnCCTVDetected(Vector3 detectedPos)
     {
@@ -108,6 +170,11 @@ public class GuardController : MonoBehaviour
     public void OnSecurityAlert(Vector3 alertPos)
     {
         Investigate(alertPos);
+    }
+
+    public void OnDirectorAlert(Vector3 detectedPos)
+    {
+        Investigate(detectedPos);
     }
 
     public void SetMoveSpeed(float speed)
@@ -134,8 +201,22 @@ public class GuardController : MonoBehaviour
             return;
         }
 
-        agent.speed = baseMoveSpeed * (IsAlerted ? alertSpeedMultiplier : 1f);
+        float missionMultiplier =
+            IsAlerted ? alertSpeedMultiplier : 1f;
+
+        float directorMultiplier =
+            securityDirector != null
+                ? securityDirector.MoveSpeedMultiplier : 1f;
+
+        agent.speed =
+            baseMoveSpeed * missionMultiplier * directorMultiplier;
     }
+
+    public void RefreshDirectorResponse()
+    {
+        UpdateMoveSpeed();
+    }
+
 
     private void Investigate(Vector3 targetPos)
     {
@@ -192,7 +273,17 @@ public class GuardController : MonoBehaviour
 
     public void ChangeToChase()
     {
+        if (stateMachine.CurrentState == chaseState)
+        {
+            return;
+        }
+
         stateMachine.ChangeState(chaseState);
+
+        if (securityDirector != null && vision != null && vision.Player != null)
+        {
+            securityDirector.ReportChase(vision.Player.position, this);
+        }
     }
 
     public void ReturnFromSuspicious()
@@ -208,7 +299,14 @@ public class GuardController : MonoBehaviour
 
     public void ChangeToSearch()
     {
+        bool lostChase = stateMachine.CurrentState == chaseState;
+
         stateMachine.ChangeState(searchState);
+
+        if (lostChase && securityDirector != null)
+        {
+            securityDirector.ReportLostTarget(lastKnownPos, this);
+        }
     }
 
     public bool TryCapturePlayer()

@@ -13,8 +13,16 @@ public class GuardData : ScriptableObject
     [Header("State")]
     public float patrolWaitTime = 1.5f;
     public float investigateTime = 3f;
-    public float searchTime = 4f;
-    public float lostSightTime = 0.7f;
+    public float searchTime = 5f;
+    public float lostSightTime = 1.5f;
+
+    [Header("Noise Tracking")]
+    public float noiseRetargetInterval = 1.2f;
+    public float noiseRetargetDistance = 2.5f;
+
+    [Header("Active Search")]
+    public float searchRadius = 3f;
+    public float searchPointWaitTime = 1.2f;
 
     [Header("Vision")]
     public float visionRange = 12f;
