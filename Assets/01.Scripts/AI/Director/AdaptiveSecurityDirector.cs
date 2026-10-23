@@ -303,7 +303,7 @@ public class AdaptiveSecurityDirector : MonoBehaviour
                 continue;
             }
 
-            closestGuard.OnDirectorAlert(searchPos);
+            closestGuard.OnDirectorAlert(searchPos, sourceGuard);
             dispatchedCount++;
 
             Debug.Log($"[Director] Search support: {closestGuard.name} → {searchPos}");
@@ -323,5 +323,21 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         }
 
         DispatchSupport(lastKnownPos, sourceGuard);
+    }
+
+    public void ReportSearchFinished(GuardController sourceGuard)
+    {
+        if (guards == null)
+        {
+            return;
+        }
+
+        foreach (GuardController guard in guards)
+        {
+            if (guard != null && guard != sourceGuard)
+            {
+                guard.CancelDirectorSupport(sourceGuard);
+            }
+        }
     }
 }
