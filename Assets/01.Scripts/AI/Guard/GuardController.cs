@@ -24,7 +24,8 @@ public class GuardController : MonoBehaviour
 
     private NavMeshAgent agent;
     private GuardHearing hearing;
-    private GuardVision vision;
+    private GuardVision vision; 
+    private GuardController directorSupportSource;
 
     private StateMachine<GuardController> stateMachine;
 
@@ -172,9 +173,14 @@ public class GuardController : MonoBehaviour
         Investigate(alertPos);
     }
 
-    public void OnDirectorAlert(Vector3 detectedPos)
+    public void OnDirectorAlert(Vector3 detectedPos, GuardController sourceGuard)
     {
         Investigate(detectedPos);
+
+        if (stateMachine.CurrentState == investigateState)
+        {
+            directorSupportSource = sourceGuard;
+        }
     }
 
     public void SetMoveSpeed(float speed)
@@ -220,6 +226,8 @@ public class GuardController : MonoBehaviour
 
     private void Investigate(Vector3 targetPos)
     {
+        directorSupportSource = null;
+
         if (stateMachine.CurrentState == suspiciousState || stateMachine.CurrentState == chaseState)
         {
             return;
@@ -263,11 +271,20 @@ public class GuardController : MonoBehaviour
 
     public void ChangeToPatrol()
     {
+        bool searchFinished = stateMachine.CurrentState == searchState;
+
+        directorSupportSource = null;
         stateMachine.ChangeState(patrolState);
+
+        if (searchFinished && securityDirector != null)
+        {
+            securityDirector.ReportSearchFinished(this);
+        }
     }
 
     public void ChangeToSuspicious()
     {
+        directorSupportSource = null;
         stateMachine.ChangeState(suspiciousState);
     }
 
@@ -278,6 +295,7 @@ public class GuardController : MonoBehaviour
             return;
         }
 
+        directorSupportSource = null;
         stateMachine.ChangeState(chaseState);
 
         if (securityDirector != null && vision != null && vision.Player != null)
@@ -285,6 +303,7 @@ public class GuardController : MonoBehaviour
             securityDirector.ReportChase(vision.Player.position, this);
         }
     }
+
 
     public void ReturnFromSuspicious()
     {
@@ -331,5 +350,17 @@ public class GuardController : MonoBehaviour
 
         missionController.FailMission();
         return true;
+    }
+
+    public void CancelDirectorSupport(GuardController sourceGuard)
+    {
+        if (directorSupportSource != sourceGuard ||
+            stateMachine.CurrentState != investigateState)
+        {
+            return;
+        }
+
+        directorSupportSource = null;
+        ChangeToPatrol();
     }
 }
