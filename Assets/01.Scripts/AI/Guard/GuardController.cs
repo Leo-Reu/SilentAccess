@@ -27,6 +27,9 @@ public class GuardController : MonoBehaviour
     private GuardVision vision; 
     private GuardController directorSupportSource;
 
+    private bool directorSupportBlock;
+    private Vector3 directorBlockLookPosition;
+
     private StateMachine<GuardController> stateMachine;
 
     private GuardPatrolState patrolState;
@@ -81,6 +84,14 @@ public class GuardController : MonoBehaviour
     public bool IsChasing =>
         stateMachine != null &&
         stateMachine.CurrentState == chaseState;
+
+    public bool IsDirectorBlocking =>
+        directorSupportSource != null &&
+        directorSupportBlock;
+    public Vector3 DirectorBlockLookPosition =>
+        directorBlockLookPosition;
+    public float DirectorBlockWatchDuration =>
+        securityDirector != null ? Mathf.Max(InvestigateDuration, securityDirector.BlockWatchDuration) : InvestigateDuration;
 
     private void Awake()
     {
@@ -173,13 +184,51 @@ public class GuardController : MonoBehaviour
         Investigate(alertPos);
     }
 
-    public void OnDirectorAlert(Vector3 detectedPos, GuardController sourceGuard)
+    public void OnDirectorAlert(Vector3 detectedPos, GuardController sourceGuard, bool isBlockRole, Vector3 lastKnownPosition)
     {
         Investigate(detectedPos);
 
         if (stateMachine.CurrentState == investigateState)
         {
             directorSupportSource = sourceGuard;
+            directorSupportBlock = isBlockRole;
+            directorBlockLookPosition = lastKnownPosition;
+        }
+    }
+
+    public void ReportDirectorSupportArrived()
+    {
+        if (directorSupportSource == null || securityDirector == null)
+        {
+            return;
+        }
+
+        securityDirector.ReportSupportArrived(this, directorSupportSource);
+    }
+
+    private void FinishDirectorSupport(bool completed)
+    {
+        if (directorSupportSource == null)
+        {
+            return;
+        }
+
+        GuardController sourceGuard = directorSupportSource;
+        directorSupportSource = null;
+        directorSupportBlock = false;
+
+        if (securityDirector == null)
+        {
+            return;
+        }
+
+        if (completed)
+        {
+            securityDirector.ReportSupportCompleted(this, sourceGuard);
+        }
+        else
+        {
+            securityDirector.ReportSupportInterrupted(this, sourceGuard);
         }
     }
 
@@ -223,10 +272,9 @@ public class GuardController : MonoBehaviour
         UpdateMoveSpeed();
     }
 
-
     private void Investigate(Vector3 targetPos)
     {
-        directorSupportSource = null;
+        FinishDirectorSupport(false);
 
         if (stateMachine.CurrentState == suspiciousState || stateMachine.CurrentState == chaseState)
         {
@@ -273,7 +321,7 @@ public class GuardController : MonoBehaviour
     {
         bool searchFinished = stateMachine.CurrentState == searchState;
 
-        directorSupportSource = null;
+        FinishDirectorSupport(true);
         stateMachine.ChangeState(patrolState);
 
         if (searchFinished && securityDirector != null)
@@ -284,7 +332,7 @@ public class GuardController : MonoBehaviour
 
     public void ChangeToSuspicious()
     {
-        directorSupportSource = null;
+        FinishDirectorSupport(false);
         stateMachine.ChangeState(suspiciousState);
     }
 
@@ -295,7 +343,7 @@ public class GuardController : MonoBehaviour
             return;
         }
 
-        directorSupportSource = null;
+        FinishDirectorSupport(false);
         stateMachine.ChangeState(chaseState);
 
         if (securityDirector != null && vision != null && vision.Player != null)
@@ -303,7 +351,6 @@ public class GuardController : MonoBehaviour
             securityDirector.ReportChase(vision.Player.position, this);
         }
     }
-
 
     public void ReturnFromSuspicious()
     {
@@ -354,13 +401,21 @@ public class GuardController : MonoBehaviour
 
     public void CancelDirectorSupport(GuardController sourceGuard)
     {
-        if (directorSupportSource != sourceGuard ||
-            stateMachine.CurrentState != investigateState)
+        if (directorSupportSource != sourceGuard || stateMachine.CurrentState != investigateState)
         {
             return;
         }
 
         directorSupportSource = null;
+        directorSupportBlock = false;
+
+        if (securityDirector != null)
+        {
+            securityDirector.ReportSupportCancelled(this, sourceGuard);
+        }
+
+        Debug.Log($"[Director] Support cancelled: {name}");
+
         ChangeToPatrol();
     }
 }
