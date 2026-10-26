@@ -9291,6 +9291,13 @@ MonoBehaviour:
   - {fileID: 1926168238}
   supportCooldown: 12
   searchSpread: 4
+  blockMinDistance: 6
+  blockMaxDistance: 30
+  blockIdealDistance: 18
+  blockDistancePenalty: 2
+  incidentMinDuration: 15
+  incidentAfterSearchDuration: 8
+  supportResolveTimeout: 30
   highAlertSpeedMultiplier: 1.1
   cautionPatrolWaitMultiplier: 0.75
   highAlertPatrolWaitMultiplier: 0.5
