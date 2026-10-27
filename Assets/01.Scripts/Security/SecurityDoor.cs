@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using System;
 public class SecurityDoor : MonoBehaviour
 {
     public enum AccessMode
@@ -36,6 +36,7 @@ public class SecurityDoor : MonoBehaviour
     private bool guardTriggerLogged;
 
     public bool IsUnlocked => isUnlocked;
+    public event Action OnUnlocked;
 
     private void Start()
     {
@@ -153,6 +154,8 @@ public class SecurityDoor : MonoBehaviour
         {
             lockedDoorObstacle.enabled = false;
         }
+
+        OnUnlocked?.Invoke();
 
         Debug.Log("서버실 잠금 해제 완료");
     }
