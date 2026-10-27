@@ -31,6 +31,11 @@ public class MissionController : MonoBehaviour
     [SerializeField] private SecurityDoor serverDoor;
     [SerializeField] private KeycardPickup keycardPickup;
 
+    [Header("Debug")]
+    [SerializeField] private bool debugInvincible;
+
+    public bool DebugInvincible => Application.isEditor && debugInvincible;
+
     private static bool retryFromEscape;
 
     public MissionPhase CurrentPhase { get; private set; } = MissionPhase.Infiltration;
@@ -240,5 +245,10 @@ public class MissionController : MonoBehaviour
         HandleDataStolen();
 
         Debug.Log("[MissionController] Escape checkpoint restored");
+    }
+
+    public void SetDebugInvincible(bool value)
+    {
+        debugInvincible = value;
     }
 }

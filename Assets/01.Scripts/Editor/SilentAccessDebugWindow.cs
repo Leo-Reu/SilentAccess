@@ -123,6 +123,8 @@ public class SilentAccessDebugWindow : EditorWindow
             EditorGUILayout.LabelField(guard.name, guard.CurrentStateName);
             EditorGUILayout.LabelField("Player Visible", guard.Vision.IsPlayerVisible.ToString());
             EditorGUILayout.LabelField("Detection", guard.Vision.Detection.ToString("F2"));
+            EditorGUILayout.LabelField("Move Speed", guard.Agent.speed.ToString("F2"));
+            EditorGUILayout.LabelField("Patrol Wait", guard.PatrolWaitDuration.ToString("F2") + "s");
             EditorGUILayout.Space(5);
         }
     }
@@ -193,6 +195,21 @@ public class SilentAccessDebugWindow : EditorWindow
                 door.Unlock();
             }
         }
+
+        MissionController mission = refs.MissionController;
+
+        if (mission != null)
+        {
+            bool invincible = EditorGUILayout.Toggle("Invincible Mode", mission.DebugInvincible);
+
+            if (invincible != mission.DebugInvincible)
+            {
+                mission.SetDebugInvincible(invincible);
+                Debug.Log($"[Debug Tool] Invincible Mode: {(invincible ? "ON" : "OFF")}");
+            }
+        }
+
+        EditorGUILayout.Space(10);
     }
 
     private void DrawMission(DebugSceneRefs refs)

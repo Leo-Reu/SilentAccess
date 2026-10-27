@@ -395,6 +395,11 @@ public class GuardController : MonoBehaviour
             return false;
         }
 
+        if (missionController.DebugInvincible)
+        {
+            return false;
+        }
+
         missionController.FailMission();
         return true;
     }
