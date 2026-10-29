@@ -14,6 +14,10 @@ public class AccessTerminal : MonoBehaviour, IInteractable
     [SerializeField] private Button closeBtn;
     [SerializeField] private TextMeshProUGUI statusText;
 
+    [Header("Status Icons")]
+    [SerializeField] private GameObject lockedImage;
+    [SerializeField] private GameObject unlockedIndicator;
+
     private PlayerInteraction currentPlayer;
     private PlayerInventory currentInventory;
 
@@ -77,6 +81,23 @@ public class AccessTerminal : MonoBehaviour, IInteractable
 
     private void UpdateUI()
     {
+        bool isUnlocked = serverDoor != null && serverDoor.IsUnlocked;
+
+        if (lockedImage != null)
+        {
+            lockedImage.SetActive(!isUnlocked);
+        }
+
+        if (unlockedIndicator != null)
+        {
+            unlockedIndicator.SetActive(isUnlocked);
+        }
+
+        if (statusText != null)
+        {
+            statusText.color = isUnlocked ? new Color32(100, 226, 179, 255) : Color.white;
+        }
+
         bool canUnlock = currentInventory != null && currentInventory.HasKeycard && serverDoor != null && !serverDoor.IsUnlocked;
 
         if (unlockServerBtn != null)

@@ -15,6 +15,14 @@ public class MainServer : MonoBehaviour, IInteractable
     [SerializeField] private Button closeBtn;
     [SerializeField] private TextMeshProUGUI statusText;
 
+    [Header("Status Icons")]
+    [SerializeField] private GameObject downloadImage;
+    [SerializeField] private GameObject completedIndicator;
+
+    [Header("Progress")]
+    [SerializeField] private GameObject progressBar;
+    [SerializeField] private Slider progressSlider;
+
     private PlayerInteraction currentPlayer;
     private float downloadTimer;
     private bool isDownloading;
@@ -163,10 +171,39 @@ public class MainServer : MonoBehaviour, IInteractable
             startDownloadBtn.interactable = currentPlayer != null && !isDownloading && !isDataStolen;
         }
 
+        if (downloadImage != null)
+        {
+            downloadImage.SetActive(!isDataStolen);
+        }
+
+        if (completedIndicator != null)
+        {
+            completedIndicator.SetActive(isDataStolen);
+        }
+
+        if (progressBar != null)
+        {
+            progressBar.SetActive(isDownloading || isDataStolen);
+        }
+
+        float progress = Mathf.Clamp01(downloadTimer / Mathf.Max(0.1f, downloadDuration));
+
+        if (progressSlider != null)
+        {
+            progressSlider.value = isDataStolen ? 1f : progress;
+
+            if (progressSlider.fillRect != null)
+            {
+                progressSlider.fillRect.gameObject.SetActive(progressSlider.value > 0f);
+            }
+        }
+
         if (statusText == null)
         {
             return;
         }
+
+        statusText.color = isDataStolen ? new Color32(100, 226, 179, 255) : Color.white;
 
         if (isDataStolen)
         {
@@ -174,7 +211,6 @@ public class MainServer : MonoBehaviour, IInteractable
         }
         else if (isDownloading)
         {
-            float progress = Mathf.Clamp01(downloadTimer / Mathf.Max(0.1f, downloadDuration));
             statusText.text = $"Downloading... {Mathf.FloorToInt(progress * 100f)}%";
         }
         else
