@@ -207,15 +207,15 @@ public class MainServer : MonoBehaviour, IInteractable
 
         if (isDataStolen)
         {
-            statusText.text = "Download Complete";
+            statusText.text = "다운로드 완료";
         }
         else if (isDownloading)
         {
-            statusText.text = $"Downloading... {Mathf.FloorToInt(progress * 100f)}%";
+            statusText.text = $"다운로드 중... {Mathf.FloorToInt(progress * 100f)}%";
         }
         else
         {
-            statusText.text = "Ready to Download";
+            statusText.text = "다운로드 준비 완료";
         }
     }
 

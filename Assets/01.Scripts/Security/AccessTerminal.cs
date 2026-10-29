@@ -112,19 +112,19 @@ public class AccessTerminal : MonoBehaviour, IInteractable
 
         if (serverDoor == null)
         {
-            statusText.text = "Server Door Not Assigned";
+            statusText.text = "서버실 출입문 연결 오류";
         }
         else if (serverDoor.IsUnlocked)
         {
-            statusText.text = "Server Unlocked";
+            statusText.text = "서버실 잠금 해제 완료";
         }
         else if (currentInventory == null || !currentInventory.HasKeycard)
         {
-            statusText.text = "Keycard Required";
+            statusText.text = "카드키가 필요합니다";
         }
         else
         {
-            statusText.text = "Server Locked";
+            statusText.text = "서버실 잠김";
         }
     }
 

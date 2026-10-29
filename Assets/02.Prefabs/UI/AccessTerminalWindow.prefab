@@ -277,7 +277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Server Locked
+  m_text: "\uC11C\uBC84\uC2E4 \uC7A0\uAE40"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
   m_sharedMaterial: {fileID: -4833566070126860639, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
@@ -648,7 +648,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Unlock Server
+  m_text: "\uC11C\uBC84\uC2E4 \uC7A0\uAE08 \uD574\uC81C"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
   m_sharedMaterial: {fileID: -4833566070126860639, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
@@ -892,7 +892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 1, b: 0.9764706, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

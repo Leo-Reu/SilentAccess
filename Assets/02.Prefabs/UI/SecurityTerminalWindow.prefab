@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6408346710486265813}
   - component: {fileID: 5125239382029315902}
   m_Layer: 5
-  m_Name: UnlockedIndicator
+  m_Name: DisabledIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: CCTV Active
+  m_text: "CCTV \uC791\uB3D9 \uC911"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
   m_sharedMaterial: {fileID: -4833566070126860639, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
@@ -648,7 +648,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Disable CCTV
+  m_text: "CCTV \uBE44\uD65C\uC131\uD654"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
   m_sharedMaterial: {fileID: -4833566070126860639, guid: 863d5828f9461c14caf324f8a7bba69a, type: 2}
@@ -845,7 +845,7 @@ GameObject:
   - component: {fileID: 226136394246989721}
   - component: {fileID: 2778226228816986363}
   m_Layer: 5
-  m_Name: LockedImage
+  m_Name: CCTVActiveImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -892,7 +892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 1, b: 0.9764706, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
