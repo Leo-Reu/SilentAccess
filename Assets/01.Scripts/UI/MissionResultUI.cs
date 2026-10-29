@@ -14,6 +14,10 @@ public class MissionResultUI : MonoBehaviour
     [SerializeField] private Button retryBtn;
     [SerializeField] private TextMeshProUGUI retryBtnText;
 
+    [Header("Result Icons")]
+    [SerializeField] private GameObject failImage;
+    [SerializeField] private GameObject successImage;
+
     private void Awake()
     {
         if (resultPanel != null)
@@ -52,14 +56,29 @@ public class MissionResultUI : MonoBehaviour
 
         bool isSuccess = result == MissionResult.Success;
 
+        if (failImage != null)
+        {
+            failImage.SetActive(!isSuccess);
+        }
+
+        if (successImage != null)
+        {
+            successImage.SetActive(isSuccess);
+        }
+
         if (resultText != null)
         {
-            resultText.text = isSuccess ? "MISSION COMPLETE" : "MISSION FAILED";
+            resultText.color = isSuccess ? new Color32(100, 226, 179, 255) : new Color32(250, 114, 121, 255);
+        }
+
+        if (resultText != null)
+        {
+            resultText.text = isSuccess ? "미션 성공" : "미션 실패";
         }
 
         if (retryBtnText != null)
         {
-            retryBtnText.text = isSuccess ? "PLAY AGAIN" : "RETRY";
+            retryBtnText.text = isSuccess ? "처음부터 플레이" : "다시 시도";
         }
 
         resultPanel.SetActive(true);

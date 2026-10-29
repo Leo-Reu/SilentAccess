@@ -163,7 +163,7 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         }
 
         statusText.color = isCCTVDisabled ? new Color32(100, 226, 179, 255) : Color.white;
-        statusText.text = isCCTVDisabled ? $"CCTV OFF ({Mathf.CeilToInt(remainTime)}s)" : "CCTV ON";
+        statusText.text = isCCTVDisabled ? $"CCTV 비활성화 ({Mathf.CeilToInt(remainTime)}초)" : "CCTV 작동 중";
     }
 
     private void OnDisable()

@@ -75,7 +75,7 @@ public class SecurityAlertFeedback : MonoBehaviour
 
     private IEnumerator HideAlert()
     {
-        yield return new WaitForSeconds(Mathf.Max(0.1f, displayDuration));
+        yield return new WaitForSecondsRealtime(Mathf.Max(0.1f, displayDuration));
 
         alertPanel.SetActive(false);
         alertCoroutine = null;
