@@ -15,6 +15,10 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
     [SerializeField] private Button closeBtn;
     [SerializeField] private TextMeshProUGUI statusText;
 
+    [Header("Status Icons")]
+    [SerializeField] private GameObject cctvActiveImage;
+    [SerializeField] private GameObject cctvDisabledIndicator;
+
     private PlayerInteraction currentPlayer;
 
     private float remainTime;
@@ -138,6 +142,16 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
 
     private void UpdateUI()
     {
+        if (cctvActiveImage != null)
+        {
+            cctvActiveImage.SetActive(!isCCTVDisabled);
+        }
+
+        if (cctvDisabledIndicator != null)
+        {
+            cctvDisabledIndicator.SetActive(isCCTVDisabled);
+        }
+
         if (disableCCTVBtn != null)
         {
             disableCCTVBtn.interactable = !isCCTVDisabled;
@@ -148,9 +162,8 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
             return;
         }
 
-        statusText.text = isCCTVDisabled
-            ? $"CCTV OFF ({Mathf.CeilToInt(remainTime)}s)"
-            : "CCTV ON";
+        statusText.color = isCCTVDisabled ? new Color32(100, 226, 179, 255) : Color.white;
+        statusText.text = isCCTVDisabled ? $"CCTV OFF ({Mathf.CeilToInt(remainTime)}s)" : "CCTV ON";
     }
 
     private void OnDisable()
