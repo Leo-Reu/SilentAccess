@@ -22,6 +22,8 @@ public class PlayerInteraction : MonoBehaviour
     private PlayerFootstepNoise footstepNoise;
 
     private bool canInteract = true;
+    public bool CanInteract => canInteract;
+    public int LastControlEnabledFrame { get; private set; } = -1;
 
     private InputAction interactAction;
     private InputAction throwAction;
@@ -93,6 +95,11 @@ public class PlayerInteraction : MonoBehaviour
 
     public void SetControlEnabled(bool value)
     {
+        if (value && !canInteract)
+        {
+            LastControlEnabledFrame = Time.frameCount;
+        }
+
         canInteract = value;
 
         if (playerController != null)
