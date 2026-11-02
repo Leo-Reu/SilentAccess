@@ -60,6 +60,8 @@ public class CCTVController : MonoBehaviour
         {
             isAlertSent = true;
 
+            SoundManager.Instance?.PlayCCTVDetection();
+
             if (securityDirector != null)
             {
                 securityDirector.ReportCCTV();

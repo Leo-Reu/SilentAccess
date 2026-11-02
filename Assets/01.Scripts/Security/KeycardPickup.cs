@@ -19,6 +19,7 @@ public class KeycardPickup : MonoBehaviour, IInteractable
 
         if (inventory.CollectKeycard())
         {
+            SoundManager.Instance?.PlayConfirm();
             gameObject.SetActive(false);
         }
     }

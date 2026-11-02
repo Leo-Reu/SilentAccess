@@ -346,6 +346,8 @@ public class GuardController : MonoBehaviour
         FinishDirectorSupport(false);
         stateMachine.ChangeState(chaseState);
 
+        SoundManager.Instance?.PlayGuardDetection();
+
         if (securityDirector != null && vision != null && vision.Player != null)
         {
             securityDirector.ReportChase(vision.Player.position, this);

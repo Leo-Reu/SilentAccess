@@ -12,10 +12,21 @@ public class PlayerFootstepNoise : MonoBehaviour
     [SerializeField] private float runStepInterval = 0.35f;
     [SerializeField] private float crouchStepInterval = 0.8f;
 
+    [Header("Footstep Audio")]
+    [SerializeField] private AudioSource footstepAudioSource;
+    [SerializeField] private AudioClip[] walkFootsteps;
+    [SerializeField] private AudioClip[] runFootsteps;
+
+    [Header("Footstep Volume")]
+    [SerializeField, Range(0f, 1f)] private float crouchVolume = 0.15f;
+    [SerializeField, Range(0f, 1f)] private float walkVolume = 0.35f;
+    [SerializeField, Range(0f, 1f)] private float runVolume = 0.6f;
+
     private CharacterController controller;
     private PlayerController playerController;
 
     private float stepTimer;
+    private int stepIndex;
 
     private void Awake()
     {
@@ -58,5 +69,38 @@ public class PlayerFootstepNoise : MonoBehaviour
         stepTimer = 0f;
 
         NoiseSystem.GenerateNoise(transform.position, noiseRadius, NoiseType.Footstep);
+        PlayFootstep();
     }
+    private void PlayFootstep()
+    {
+        if (footstepAudioSource == null)
+        {
+            return;
+        }
+
+        bool isRunning = playerController.IsRunning;
+        AudioClip[] clips = isRunning && runFootsteps != null && runFootsteps.Length > 0 ? runFootsteps : walkFootsteps;
+
+        if (clips == null || clips.Length == 0)
+        {
+            return;
+        }
+
+        AudioClip clip = clips[stepIndex % clips.Length];
+        stepIndex++;
+
+        if (clip == null)
+        {
+            return;
+        }
+
+        float volume = playerController.IsCrouch ? crouchVolume : isRunning ? runVolume : walkVolume;
+        footstepAudioSource.PlayOneShot(clip, volume);
+    }
+
+    private void OnDisable()
+    {
+        stepTimer = 0f;
+    }
+
 }

@@ -103,6 +103,11 @@ public class PauseMenuUI : MonoBehaviour
         player.SetControlEnabled(false);
         Time.timeScale = 0f;
         pausePanel.SetActive(true);
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayOpen();
+        }
     }
 
     public void ResumeGame()
@@ -125,6 +130,11 @@ public class PauseMenuUI : MonoBehaviour
 
         Time.timeScale = 1f;
         player.SetControlEnabled(true);
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayClose();
+        }
     }
 
     public void ReturnToMainMenu()

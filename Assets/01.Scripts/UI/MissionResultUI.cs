@@ -83,6 +83,19 @@ public class MissionResultUI : MonoBehaviour
 
         resultPanel.SetActive(true);
 
+        // 미션 결과에 따라 성공 또는 실패 효과음 재생
+        if (SoundManager.Instance != null)
+        {
+            if (isSuccess)
+            {
+                SoundManager.Instance.PlayMissionSuccess();
+            }
+            else
+            {
+                SoundManager.Instance.PlayMissionFail();
+            }
+        }
+
         if (player != null)
         {
             player.SetControlEnabled(false);
