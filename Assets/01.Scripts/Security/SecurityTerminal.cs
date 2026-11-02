@@ -26,10 +26,20 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
 
     private void Awake()
     {
-        terminalPanel.SetActive(false);
+        if (terminalPanel != null)
+        {
+            terminalPanel.SetActive(false);
+        }
 
-        disableCCTVBtn.onClick.AddListener(DisableCCTV);
-        closeBtn.onClick.AddListener(CloseTerminal);
+        if (disableCCTVBtn != null)
+        {
+            disableCCTVBtn.onClick.AddListener(DisableCCTV);
+        }
+
+        if (closeBtn != null)
+        {
+            closeBtn.onClick.AddListener(CloseTerminal);
+        }
     }
 
     private void Update()
@@ -62,7 +72,7 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
 
     public void Interact(PlayerInteraction player)
     {
-        if (currentPlayer != null || player == null)
+        if (currentPlayer != null || player == null || terminalPanel == null)
         {
             return;
         }
@@ -73,6 +83,11 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         terminalPanel.SetActive(true);
 
         UpdateUI();
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayOpen();
+        }
     }
 
     private void DisableCCTV()
@@ -109,6 +124,8 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         remainTime = Mathf.Max(0.1f, disableDuration);
 
         UpdateUI();
+
+        SoundManager.Instance?.PlayConfirm();
     }
 
     private void RestoreCCTV()
@@ -124,7 +141,10 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         isCCTVDisabled = false;
         remainTime = 0f;
 
-        UpdateUI();
+        if (isActiveAndEnabled)
+        {
+            UpdateUI();
+        }
     }
 
     public void CloseTerminal()
@@ -134,10 +154,18 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
             return;
         }
 
-        terminalPanel.SetActive(false);
+        if (terminalPanel != null)
+        {
+            terminalPanel.SetActive(false);
+        }
 
         currentPlayer.SetControlEnabled(true);
         currentPlayer = null;
+
+        if (SoundManager.Instance != null)
+{
+    SoundManager.Instance.PlayClose();
+}
     }
 
     private void UpdateUI()
@@ -168,8 +196,15 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
 
     private void OnDisable()
     {
-        CloseTerminal();
+        // 터미널 UI 정리 및 플레이어 참조 해제
+        if (terminalPanel != null)
+        {
+            terminalPanel.SetActive(false);
+        }
 
+        currentPlayer = null;
+
+        // 비활성화된 CCTV는 기존 방식대로 복구
         if (isCCTVDisabled)
         {
             RestoreCCTV();

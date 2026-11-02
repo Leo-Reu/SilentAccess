@@ -18,6 +18,7 @@ public class SettingsUI : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private Slider masterVolumeSlider;
+    [SerializeField] private Slider bgmVolumeSlider;
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private AudioMixer sfxMixer;
 
@@ -25,7 +26,8 @@ public class SettingsUI : MonoBehaviour
     private const string ResolutionHeightKey = "SilentAccess.ResolutionHeight";
     private const string ScreenModeKey = "SilentAccess.ScreenMode";
     private const string MasterVolumeKey = "SilentAccess.MasterVolume";
-    private const string SFXVolumeKey = "SilentAccess.SFXVolume";
+    private const string SFXVolumeKey = "SilentAccess.SFXVolume"; 
+    private const string BGMVolumeKey = "SilentAccess.BGMVolume";
 
     private readonly List<Vector2Int> resolutions = new List<Vector2Int>();
 
@@ -165,6 +167,11 @@ public class SettingsUI : MonoBehaviour
             masterVolumeSlider.value = Mathf.Clamp(PlayerPrefs.GetInt(MasterVolumeKey, 100), 0, 100);
         }
 
+        if (bgmVolumeSlider != null)
+        {
+            bgmVolumeSlider.value = Mathf.Clamp(PlayerPrefs.GetInt(BGMVolumeKey, 100), 0, 100);
+        }
+
         if (sfxVolumeSlider != null)
         {
             sfxVolumeSlider.value = Mathf.Clamp(PlayerPrefs.GetInt(SFXVolumeKey, 100), 0, 100);
@@ -213,23 +220,34 @@ public class SettingsUI : MonoBehaviour
         }
     }
 
-    private void ApplyAudio(int masterVolume, int sfxVolume)
+
+    private void ApplyAudio(int masterVolume, int bgmVolume, int sfxVolume)
     {
-        // 전체 음량은 모든 AudioListener 출력에 적용
+        // 전체 음량 적용
         AudioListener.volume = masterVolume / 100f;
 
-        // 효과음은 AudioMixer의 SFX 그룹에 연결된 소스에만 적용
         if (sfxMixer != null)
         {
-            float volume = Mathf.Max(sfxVolume / 100f, 0.0001f);
-            float decibels = Mathf.Log10(volume) * 20f;
+            // 배경음 음량 적용
+            float bgm = Mathf.Max(bgmVolume / 100f, 0.0001f);
+            float bgmDecibels = Mathf.Log10(bgm) * 20f;
 
-            if (!sfxMixer.SetFloat("SFXVolume", decibels))
+            if (!sfxMixer.SetFloat("BGMVolume", bgmDecibels))
+            {
+                Debug.LogWarning("AudioMixer에서 BGMVolume 노출 파라미터를 찾을 수 없습니다");
+            }
+
+            // 효과음 음량 적용
+            float sfx = Mathf.Max(sfxVolume / 100f, 0.0001f);
+            float sfxDecibels = Mathf.Log10(sfx) * 20f;
+
+            if (!sfxMixer.SetFloat("SFXVolume", sfxDecibels))
             {
                 Debug.LogWarning("AudioMixer에서 SFXVolume 노출 파라미터를 찾을 수 없습니다");
             }
         }
     }
+
 
     private void ApplySavedSettings()
     {
@@ -239,14 +257,39 @@ public class SettingsUI : MonoBehaviour
         }
 
         int masterVolume = Mathf.Clamp(PlayerPrefs.GetInt(MasterVolumeKey, 100), 0, 100);
+        int bgmVolume = Mathf.Clamp(PlayerPrefs.GetInt(BGMVolumeKey, 100), 0, 100);
         int sfxVolume = Mathf.Clamp(PlayerPrefs.GetInt(SFXVolumeKey, 100), 0, 100);
 
-        ApplyAudio(masterVolume, sfxVolume);
+        ApplyAudio(masterVolume, bgmVolume, sfxVolume);
     }
 
+    public void Apply()
+    {
+        if (resolutionDropdown == null || screenModeDropdown == null || masterVolumeSlider == null || bgmVolumeSlider == null || sfxVolumeSlider == null)
+        {
+            return;
+        }
+
+        Vector2Int size = resolutions[resolutionDropdown.value];
+        int screenMode = screenModeDropdown.value;
+        int masterVolume = Mathf.RoundToInt(masterVolumeSlider.value);
+        int bgmVolume = Mathf.RoundToInt(bgmVolumeSlider.value);
+        int sfxVolume = Mathf.RoundToInt(sfxVolumeSlider.value);
+
+        PlayerPrefs.SetInt(ResolutionWidthKey, size.x);
+        PlayerPrefs.SetInt(ResolutionHeightKey, size.y);
+        PlayerPrefs.SetInt(ScreenModeKey, screenMode);
+        PlayerPrefs.SetInt(MasterVolumeKey, masterVolume);
+        PlayerPrefs.SetInt(BGMVolumeKey, bgmVolume);
+        PlayerPrefs.SetInt(SFXVolumeKey, sfxVolume);
+        PlayerPrefs.Save();
+
+        ApplyDisplay(resolutionDropdown.value, screenMode);
+        ApplyAudio(masterVolume, bgmVolume, sfxVolume);
+    }
     public void Open()
     {
-        if (settingsPanel == null)
+        if (settingsPanel == null || settingsPanel.activeSelf)
         {
             return;
         }
@@ -258,30 +301,13 @@ public class SettingsUI : MonoBehaviour
 
         settingsPanel.SetActive(true);
         LoadSavedValuesIntoUI();
-    }
 
-    public void Apply()
-    {
-        if (resolutionDropdown == null || screenModeDropdown == null || masterVolumeSlider == null || sfxVolumeSlider == null)
+        if (SoundManager.Instance != null)
         {
-            return;
+            SoundManager.Instance.PlayOpen();
         }
-
-        Vector2Int size = resolutions[resolutionDropdown.value];
-        int screenMode = screenModeDropdown.value;
-        int masterVolume = Mathf.RoundToInt(masterVolumeSlider.value);
-        int sfxVolume = Mathf.RoundToInt(sfxVolumeSlider.value);
-
-        PlayerPrefs.SetInt(ResolutionWidthKey, size.x);
-        PlayerPrefs.SetInt(ResolutionHeightKey, size.y);
-        PlayerPrefs.SetInt(ScreenModeKey, screenMode);
-        PlayerPrefs.SetInt(MasterVolumeKey, masterVolume);
-        PlayerPrefs.SetInt(SFXVolumeKey, sfxVolume);
-        PlayerPrefs.Save();
-
-        ApplyDisplay(resolutionDropdown.value, screenMode);
-        ApplyAudio(masterVolume, sfxVolume);
     }
+
 
     public void Close()
     {
@@ -303,6 +329,11 @@ public class SettingsUI : MonoBehaviour
         }
 
         LastClosedFrame = Time.frameCount;
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayClose();
+        }
     }
 
     public void CloseWithoutReturn()

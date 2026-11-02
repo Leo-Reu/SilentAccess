@@ -61,6 +61,11 @@ public class AccessTerminal : MonoBehaviour, IInteractable
         terminalPanel.SetActive(true);
 
         UpdateUI();
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayOpen();
+        }
     }
 
     private void UnlockServer()
@@ -77,6 +82,8 @@ public class AccessTerminal : MonoBehaviour, IInteractable
 
         serverDoor.Unlock();
         UpdateUI();
+
+        SoundManager.Instance?.PlayConfirm();
     }
 
     private void UpdateUI()
@@ -135,16 +142,31 @@ public class AccessTerminal : MonoBehaviour, IInteractable
             return;
         }
 
-        terminalPanel.SetActive(false);
+        if (terminalPanel != null)
+        {
+            terminalPanel.SetActive(false);
+        }
 
         currentPlayer.SetControlEnabled(true);
         currentPlayer = null;
         currentInventory = null;
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayClose();
+        }
     }
 
     private void OnDisable()
     {
-        CloseTerminal();
+        // 오브젝트 비활성화 시 플레이어 조작을 복구하지 않음
+        if (terminalPanel != null)
+        {
+            terminalPanel.SetActive(false);
+        }
+
+        currentPlayer = null;
+        currentInventory = null;
     }
 
     private void OnDestroy()

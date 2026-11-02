@@ -85,6 +85,8 @@ public class MainServer : MonoBehaviour, IInteractable
 
         serverPanel.SetActive(true);
         UpdateUI();
+
+        SoundManager.Instance?.PlayOpen();
     }
 
     private void StartDownload()
@@ -98,6 +100,9 @@ public class MainServer : MonoBehaviour, IInteractable
         isDownloading = true;
 
         UpdateUI();
+
+        SoundManager.Instance?.PlayDownloadProgress();
+
         Debug.Log("[MainServer] Download started");
     }
 
@@ -105,6 +110,9 @@ public class MainServer : MonoBehaviour, IInteractable
     {
         isDownloading = false;
         isDataStolen = true;
+
+        SoundManager.Instance?.StopDownloadProgress();
+        SoundManager.Instance?.PlayDownloadComplete();
 
         UpdateUI();
 
@@ -123,6 +131,8 @@ public class MainServer : MonoBehaviour, IInteractable
         downloadTimer = 0f;
         isDataStolen = true;
 
+        SoundManager.Instance?.StopDownloadProgress();
+
         UpdateUI();
     }
 
@@ -139,7 +149,6 @@ public class MainServer : MonoBehaviour, IInteractable
     }
 #endif
 
-
     public void ClosePanel()
     {
         if (currentPlayer == null)
@@ -152,6 +161,8 @@ public class MainServer : MonoBehaviour, IInteractable
             isDownloading = false;
             downloadTimer = 0f;
 
+            SoundManager.Instance?.StopDownloadProgress();
+
             Debug.Log("[MainServer] Download cancelled");
         }
 
@@ -162,6 +173,8 @@ public class MainServer : MonoBehaviour, IInteractable
 
         currentPlayer.SetControlEnabled(true);
         currentPlayer = null;
+
+        SoundManager.Instance?.PlayClose();
     }
 
     private void UpdateUI()
@@ -221,7 +234,16 @@ public class MainServer : MonoBehaviour, IInteractable
 
     private void OnDisable()
     {
-        ClosePanel();
+        SoundManager.Instance?.StopDownloadProgress();
+
+        if (serverPanel != null)
+        {
+            serverPanel.SetActive(false);
+        }
+
+        isDownloading = false;
+        downloadTimer = 0f;
+        currentPlayer = null;
     }
 
     private void OnDestroy()
