@@ -10,10 +10,6 @@ public class SecurityAlertFeedback : MonoBehaviour
     [SerializeField] private GameObject alertPanel;
     [SerializeField] private float displayDuration = 5f;
 
-    [Header("Audio")]
-    [SerializeField] private AudioSource alertAudioSource;
-    [SerializeField] private AudioClip alertClip;
-
     private Coroutine alertCoroutine;
 
     private void Awake()
@@ -65,10 +61,7 @@ public class SecurityAlertFeedback : MonoBehaviour
 
         alertPanel.SetActive(true);
 
-        if (alertAudioSource != null && alertClip != null)
-        {
-            alertAudioSource.PlayOneShot(alertClip);
-        }
+        SoundManager.Instance?.PlaySecurityAlert();
 
         alertCoroutine = StartCoroutine(HideAlert());
     }

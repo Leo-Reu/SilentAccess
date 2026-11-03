@@ -48,23 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   bgmGroup: {fileID: -2978431112213772921, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
   sfxGroup: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
-  defaultBgm: {fileID: 0}
+  soundData: {fileID: 11400000, guid: 998255a4dcae9614ab480591599bcf98, type: 2}
   playBgmOnStart: 1
-  hoverSfx: {fileID: 8300000, guid: af9c2a92fa16e4b0cb9b375d462a9f3f, type: 3}
-  clickSfx: {fileID: 8300000, guid: 9c98ed2c0e8d6493487787ae960ce75c, type: 3}
-  openSfx: {fileID: 8300000, guid: b569aada900f14e438e0ff052d4e7f45, type: 3}
-  closeSfx: {fileID: 8300000, guid: 3c4a037e447d54038878797f8c6d9d90, type: 3}
-  confirmSfx: {fileID: 8300000, guid: 09f7ee07b81774e2ea9e35333571d914, type: 3}
-  errorSfx: {fileID: 8300000, guid: 8e8468c915f6243b0836a57e32a35a07, type: 3}
-  notificationSfx: {fileID: 8300000, guid: ea0b1606831ec45888682da700fa2156, type: 3}
-  missionSuccessSfx: {fileID: 8300000, guid: dff8046012e094b4ba40806fc5f32089, type: 3}
-  missionFailSfx: {fileID: 8300000, guid: c1f47c4aad5f14a138bf7c0467396b25, type: 3}
-  terminalHoverSfx: {fileID: 8300000, guid: 7be33d8b930bf415382a80586c46dc56, type: 3}
-  terminalClickSfx: {fileID: 8300000, guid: 262270ad62f914ce5a0a71e95e4bbfe6, type: 3}
-  downloadProgressSfx: {fileID: 8300000, guid: 608836ef0bec6904fbcf85df91a3c14f, type: 3}
-  downloadCompleteSfx: {fileID: 8300000, guid: d1853dbf2037145bda2b7cff7f3e49d7, type: 3}
-  cctvDetectionSfx: {fileID: 8300000, guid: 99452a89f05bc33439f384f0d20178ce, type: 3}
-  guardDetectionSfx: {fileID: 8300000, guid: c305b77a3efe48648b8c7f197da9ea39, type: 3}
   detectionSoundCooldown: 2
 --- !u!82 &6925891600648287384
 AudioSource:
@@ -79,7 +64,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
