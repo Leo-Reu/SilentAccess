@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2a2a3228a5469947a38e8c6e2388f17, type: 3}
+  m_Name: SoundData
+  m_EditorClassIdentifier: Assembly-CSharp::SoundData
+  bgmList:
+  - bgmType: 0
+    clip: {fileID: 0}
+  - bgmType: 1
+    clip: {fileID: 0}
+  - bgmType: 2
+    clip: {fileID: 0}
+  sfxList:
+  - sfxType: 0
+    clip: {fileID: 8300000, guid: af9c2a92fa16e4b0cb9b375d462a9f3f, type: 3}
+    volume: 0.1
+  - sfxType: 1
+    clip: {fileID: 8300000, guid: 9c98ed2c0e8d6493487787ae960ce75c, type: 3}
+    volume: 0.2
+  - sfxType: 2
+    clip: {fileID: 8300000, guid: b569aada900f14e438e0ff052d4e7f45, type: 3}
+    volume: 0.3
+  - sfxType: 3
+    clip: {fileID: 8300000, guid: 3c4a037e447d54038878797f8c6d9d90, type: 3}
+    volume: 0.3
+  - sfxType: 4
+    clip: {fileID: 8300000, guid: 7be33d8b930bf415382a80586c46dc56, type: 3}
+    volume: 0.5
+  - sfxType: 5
+    clip: {fileID: 8300000, guid: 262270ad62f914ce5a0a71e95e4bbfe6, type: 3}
+    volume: 0.3
+  - sfxType: 6
+    clip: {fileID: 8300000, guid: 09f7ee07b81774e2ea9e35333571d914, type: 3}
+    volume: 0.4
+  - sfxType: 7
+    clip: {fileID: 8300000, guid: 8e8468c915f6243b0836a57e32a35a07, type: 3}
+    volume: 0.3
+  - sfxType: 8
+    clip: {fileID: 8300000, guid: ea0b1606831ec45888682da700fa2156, type: 3}
+    volume: 0.4
+  - sfxType: 9
+    clip: {fileID: 8300000, guid: 99452a89f05bc33439f384f0d20178ce, type: 3}
+    volume: 0.3
+  - sfxType: 10
+    clip: {fileID: 8300000, guid: c305b77a3efe48648b8c7f197da9ea39, type: 3}
+    volume: 0.4
+  - sfxType: 11
+    clip: {fileID: 8300000, guid: a6093188e8317884f8b3e834fce43325, type: 3}
+    volume: 0.4
+  - sfxType: 12
+    clip: {fileID: 8300000, guid: 608836ef0bec6904fbcf85df91a3c14f, type: 3}
+    volume: 0.5
+  - sfxType: 13
+    clip: {fileID: 8300000, guid: d1853dbf2037145bda2b7cff7f3e49d7, type: 3}
+    volume: 0.5
+  - sfxType: 14
+    clip: {fileID: 8300000, guid: 3b6c971388bbd4df59bdcb9cc07c2190, type: 3}
+    volume: 0.6
+  - sfxType: 15
+    clip: {fileID: 8300000, guid: 8e8468c915f6243b0836a57e32a35a07, type: 3}
+    volume: 0.5
+  - sfxType: 16
+    clip: {fileID: 8300000, guid: 47a994a603d384276b96fb3aacac53a9, type: 3}
+    volume: 1
+  - sfxType: 17
+    clip: {fileID: 8300000, guid: 444e20fa280bd0b40be475a84e448e43, type: 3}
+    volume: 0.7
