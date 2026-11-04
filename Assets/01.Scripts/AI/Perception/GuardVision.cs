@@ -15,6 +15,7 @@ public class GuardVision : MonoBehaviour
 
     private Transform player;
     private CharacterController playerController;
+    private GuardController guardController;
 
     public float Detection => detection;
     public bool IsPlayerVisible => isPlayerVisible;
@@ -22,6 +23,10 @@ public class GuardVision : MonoBehaviour
     public bool IsFullyDetected => guardData != null && detection >= guardData.detectionThreshold;      // 완전 감지
     public Transform Player => player;
 
+    private void Awake()
+    {
+        guardController = GetComponent<GuardController>();
+    }
 
     private void Start()
     {
@@ -52,19 +57,25 @@ public class GuardVision : MonoBehaviour
             return false;
         }
 
+        // Chase 상태에서는 확장된 시야 범위를 사용
+        bool isChasing = guardController != null && guardController.IsChasing;
+
+        float currentVisionRange = isChasing ? guardData.chaseVisionRange : guardData.visionRange;
+        float currentVisionAngle = isChasing ? guardData.chaseVisionAngle : guardData.visionAngle;
+
         Vector3 targetPos = playerController != null ? player.TransformPoint(playerController.center) : player.position;
         Vector3 dir = targetPos - eyePoint.position;
 
         float distance = dir.magnitude;
 
-        if (distance > guardData.visionRange)
+        if (distance > currentVisionRange)
         {
             return false;
         }
 
         float angle = Vector3.Angle(eyePoint.forward, dir);
 
-        if (angle > guardData.visionAngle * 0.5f)
+        if (angle > currentVisionAngle * 0.5f)
         {
             return false;
         }
@@ -98,12 +109,19 @@ public class GuardVision : MonoBehaviour
             return;
         }
 
-        Gizmos.DrawWireSphere(eyePoint.position, guardData.visionRange);
+        GuardController guard = GetComponent<GuardController>();
+        bool isChasing = guard != null && guard.IsChasing;
 
-        Vector3 leftDir = Quaternion.Euler(0f, -guardData.visionAngle * 0.5f, 0f) * eyePoint.forward;
-        Vector3 rightDir = Quaternion.Euler(0f, guardData.visionAngle * 0.5f, 0f) * eyePoint.forward;
+        float currentVisionRange = isChasing ? guardData.chaseVisionRange : guardData.visionRange;
+        float currentVisionAngle = isChasing ? guardData.chaseVisionAngle : guardData.visionAngle;
 
-        Gizmos.DrawLine(eyePoint.position, eyePoint.position + leftDir * guardData.visionRange);
-        Gizmos.DrawLine(eyePoint.position, eyePoint.position + rightDir * guardData.visionRange);
+        Gizmos.color = isChasing ? Color.red : Color.cyan;
+        Gizmos.DrawWireSphere(eyePoint.position, currentVisionRange);
+
+        Vector3 leftDir = Quaternion.Euler(0f, -currentVisionAngle * 0.5f, 0f) * eyePoint.forward;
+        Vector3 rightDir = Quaternion.Euler(0f, currentVisionAngle * 0.5f, 0f) * eyePoint.forward;
+
+        Gizmos.DrawLine(eyePoint.position, eyePoint.position + leftDir * currentVisionRange);
+        Gizmos.DrawLine(eyePoint.position, eyePoint.position + rightDir * currentVisionRange);
     }
 }

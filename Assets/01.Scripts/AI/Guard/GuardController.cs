@@ -317,6 +317,12 @@ public class GuardController : MonoBehaviour
         lastKnownPos = vision.Player.position;
     }
 
+    public void InvestigateLastKnownPosition()
+    {
+        investigatePos = lastKnownPos;
+        stateMachine.ChangeState(investigateState);
+    }
+
     public void ChangeToPatrol()
     {
         bool searchFinished = stateMachine.CurrentState == searchState;
@@ -332,9 +338,16 @@ public class GuardController : MonoBehaviour
 
     public void ChangeToSuspicious()
     {
+        // 실제로 플레이어가 보일 때만 의심 상태 진입
+        if (vision == null || !vision.IsPlayerVisible)
+        {
+            return;
+        }
+
         FinishDirectorSupport(false);
         stateMachine.ChangeState(suspiciousState);
     }
+
 
     public void ChangeToChase()
     {

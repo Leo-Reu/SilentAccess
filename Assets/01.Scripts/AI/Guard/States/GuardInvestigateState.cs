@@ -19,7 +19,7 @@ public class GuardInvestigateState : IState<GuardController>
 
     public void Update(GuardController owner)
     {
-        if (owner.Vision != null)
+        if (owner.Vision != null && owner.Vision.IsPlayerVisible)
         {
             if (owner.Vision.IsFullyDetected)
             {

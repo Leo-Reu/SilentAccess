@@ -36,11 +36,23 @@ public class GuardChaseState : IState<GuardController>
 
         lostSightTimer += Time.deltaTime;
 
-        if (lostSightTimer >= owner.Data.lostSightTime)
+        // 최소 추적 유지 시간이 지나기 전에는 Chase 유지
+        if (lostSightTimer < owner.Data.lostSightTime)
         {
-            owner.ChangeToSearch();
             return;
         }
+
+        // 마지막 목격 위치까지 이동 중인지 확인
+        bool movingToLastKnown = owner.Agent.pathPending ||
+            (owner.Agent.hasPath && owner.Agent.remainingDistance > owner.Agent.stoppingDistance + 0.2f);
+
+        // 이동 중이라면 최대 유지 시간까지 Chase 지속
+        if (movingToLastKnown && lostSightTimer < owner.Data.maxLostSightChaseTime)
+        {
+            return;
+        }
+
+        owner.ChangeToSearch();
     }
 
     public void Exit(GuardController owner)

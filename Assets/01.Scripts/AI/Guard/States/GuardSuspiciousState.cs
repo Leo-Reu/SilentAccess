@@ -5,26 +5,32 @@ public class GuardSuspiciousState : IState<GuardController>
     public void Enter(GuardController owner)
     {
         owner.Agent.ResetPath();
+
+        if (owner.Vision.IsPlayerVisible)
+        {
+            owner.UpdateLastKnownPosition();
+        }
     }
 
     public void Update(GuardController owner)
     {
-        if (owner.Vision.IsFullyDetected)
-        {
-            owner.ChangeToChase();
-            return;
-        }
-
-        if (!owner.Vision.IsPartiallyDetected)
-        {
-            owner.ReturnFromSuspicious();
-            return;
-        }
-
         if (owner.Vision.IsPlayerVisible)
         {
+            // 플레이어를 보고 있는 동안 마지막 목격 위치 갱신
+            owner.UpdateLastKnownPosition();
+
+            if (owner.Vision.IsFullyDetected)
+            {
+                owner.ChangeToChase();
+                return;
+            }
+
             LookAtPlayer(owner);
+            return;
         }
+
+        // 플레이어를 놓쳤다면 마지막 목격 위치로 조사 이동
+        owner.InvestigateLastKnownPosition();
     }
 
     public void Exit(GuardController owner)
