@@ -233,6 +233,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 82261281161680650, guid: 6168dd6d514204c7cb32d5c2f219a63f, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 82261281161680650, guid: 6168dd6d514204c7cb32d5c2f219a63f, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1057,6 +1065,18 @@ PrefabInstance:
       propertyPath: m_Shadows.m_Type
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 862063591846869104, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
+      propertyPath: m_Volume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 862063591846869104, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
+      propertyPath: MinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 862063591846869104, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     - target: {fileID: 5852872933212996801, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -1719,11 +1739,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4648587000405302, guid: 9791927c188804ed09e164fdc56f1f21, type: 3}
   m_PrefabInstance: {fileID: 95012082}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &99334309 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2788204600486932990, guid: 860d846f6b00461478ebf2505d27b273, type: 3}
-  m_PrefabInstance: {fileID: 1441699301}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &102263748
 PrefabInstance:
@@ -5487,7 +5502,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7761450302704294615, guid: 860d846f6b00461478ebf2505d27b273, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 75
+      value: 78
       objectReference: {fileID: 0}
     - target: {fileID: 7761450302704294615, guid: 860d846f6b00461478ebf2505d27b273, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7723,6 +7738,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 82818159313538628, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
+      propertyPath: m_Volume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 82818159313538628, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
+      propertyPath: MinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82818159313538628, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     - target: {fileID: 108173661063393026, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
       propertyPath: m_Shadows.m_Type
       value: 0
@@ -8210,6 +8237,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 82666546278035498, guid: f871b5918e187439e9c509614d8f941d, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 82666546278035498, guid: f871b5918e187439e9c509614d8f941d, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13128,11 +13163,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4648587000405302, guid: 9791927c188804ed09e164fdc56f1f21, type: 3}
   m_PrefabInstance: {fileID: 598213066}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &599466872 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2788204600486932990, guid: 860d846f6b00461478ebf2505d27b273, type: 3}
-  m_PrefabInstance: {fileID: 399786544}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &601756107
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13587,6 +13617,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 214608608}
     m_Modifications:
+    - target: {fileID: 1617919965417541009, guid: c14ad01f8a7894d48bc2dafb382ad5ed, type: 3}
+      propertyPath: runSpeed
+      value: 6.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2205201108991985009, guid: c14ad01f8a7894d48bc2dafb382ad5ed, type: 3}
       propertyPath: m_LocalPosition.x
       value: 66
@@ -14111,11 +14145,6 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8213456028737782958, guid: c9c8374e23b86bb4aa5ccc5bd7cf2920, type: 3}
   m_PrefabInstance: {fileID: 2000370766}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &651215794 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2788204600486932990, guid: 860d846f6b00461478ebf2505d27b273, type: 3}
-  m_PrefabInstance: {fileID: 272909044}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &655517643
 PrefabInstance:
@@ -14715,11 +14744,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4648587000405302, guid: 9791927c188804ed09e164fdc56f1f21, type: 3}
   m_PrefabInstance: {fileID: 686991682}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &691357356 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2788204600486932990, guid: 860d846f6b00461478ebf2505d27b273, type: 3}
-  m_PrefabInstance: {fileID: 124645317}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &699546558
 PrefabInstance:
@@ -20647,13 +20671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b79b8c7eb860ad4fbaf4a09612f3f59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CCTVRangeVisualizer
-  eyePoint: {fileID: 599466872}
-  viewDistance: 8
-  viewAngle: 60
   segmentCount: 20
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 128
   showRange: 1
   groundY: 0.05
 --- !u!120 &1015522525
@@ -20811,13 +20829,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b79b8c7eb860ad4fbaf4a09612f3f59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CCTVRangeVisualizer
-  eyePoint: {fileID: 99334309}
-  viewDistance: 8
-  viewAngle: 60
   segmentCount: 20
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 128
   showRange: 1
   groundY: 0.05
 --- !u!120 &1020606226
@@ -21148,6 +21160,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 6438762591537599025, guid: d91f00de96bd7458c863cb4af8d7fa64, type: 3}
+      propertyPath: m_Volume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6438762591537599025, guid: d91f00de96bd7458c863cb4af8d7fa64, type: 3}
+      propertyPath: MinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6438762591537599025, guid: d91f00de96bd7458c863cb4af8d7fa64, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     - target: {fileID: 6438762591537697928, guid: d91f00de96bd7458c863cb4af8d7fa64, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -21284,6 +21308,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 82558600607362620, guid: 1db5d3c1b81194cd48839c0c592e3994, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 82558600607362620, guid: 1db5d3c1b81194cd48839c0c592e3994, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -23759,6 +23791,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 82818159313538628, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
+      propertyPath: m_Volume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 82818159313538628, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
+      propertyPath: MinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82818159313538628, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     - target: {fileID: 108173661063393026, guid: 6500eeb887aa7480e96ad2ace840fa50, type: 3}
       propertyPath: m_Shadows.m_Type
       value: 0
@@ -25220,6 +25264,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 82928455173385078, guid: e45aff520a5c541298346695d3bb1bf2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 82928455173385078, guid: e45aff520a5c541298346695d3bb1bf2, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26979,6 +27031,18 @@ PrefabInstance:
       propertyPath: m_Shadows.m_Type
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 862063591846869104, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
+      propertyPath: m_Volume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 862063591846869104, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
+      propertyPath: MinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 862063591846869104, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
     - target: {fileID: 5852872933212996801, guid: 8ea63dd0eab8b4a16977069178778f19, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -39104,13 +39168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b79b8c7eb860ad4fbaf4a09612f3f59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CCTVRangeVisualizer
-  eyePoint: {fileID: 691357356}
-  viewDistance: 8
-  viewAngle: 60
   segmentCount: 20
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 128
   showRange: 1
   groundY: 0.05
 --- !u!120 &1825045102
@@ -41810,13 +41868,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b79b8c7eb860ad4fbaf4a09612f3f59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CCTVRangeVisualizer
-  eyePoint: {fileID: 651215794}
-  viewDistance: 8
-  viewAngle: 60
   segmentCount: 20
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 128
   showRange: 1
   groundY: 0.05
 --- !u!120 &1918000253

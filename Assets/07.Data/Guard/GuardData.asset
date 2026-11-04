@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GuardData
   m_EditorClassIdentifier: Assembly-CSharp::GuardData
   patrolSpeed: 2
-  investigateSpeed: 2.5
+  investigateSpeed: 3
   chaseSpeed: 4.5
   searchSpeed: 2.5
   stoppingDistance: 0.2
@@ -21,9 +21,16 @@ MonoBehaviour:
   investigateTime: 3
   searchTime: 5
   lostSightTime: 1.5
-  visionRange: 12
-  visionAngle: 90
-  detectionSpeed: 0.7
+  maxLostSightChaseTime: 5
+  noiseRetargetInterval: 1.2
+  noiseRetargetDistance: 2.5
+  searchRadius: 3
+  searchPointWaitTime: 1.2
+  visionRange: 16
+  visionAngle: 100
+  chaseVisionRange: 23
+  chaseVisionAngle: 160
+  detectionSpeed: 0.9
   detectionDecreaseSpeed: 0.4
   suspiciousThreshold: 0.15
   detectionThreshold: 1

@@ -15,6 +15,7 @@ public class GuardData : ScriptableObject
     public float investigateTime = 3f;
     public float searchTime = 5f;
     public float lostSightTime = 1.5f;
+    public float maxLostSightChaseTime = 5f;
 
     [Header("Noise Tracking")]
     public float noiseRetargetInterval = 1.2f;
@@ -25,10 +26,16 @@ public class GuardData : ScriptableObject
     public float searchPointWaitTime = 1.2f;
 
     [Header("Vision")]
-    public float visionRange = 12f;
+    public float visionRange = 16f;
 
     [Range(0f, 360f)]
-    public float visionAngle = 90f;
+    public float visionAngle = 100f;
+
+    [Header("Chase Vision")]
+    public float chaseVisionRange = 23f;
+
+    [Range(0f, 360f)]
+    public float chaseVisionAngle = 160f;
 
     public float detectionSpeed = 0.7f;
     public float detectionDecreaseSpeed = 0.4f;
