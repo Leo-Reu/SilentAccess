@@ -31,6 +31,11 @@ public class CCTVController : MonoBehaviour
 
     private void Start()
     {
+        if (rangeVisualizer != null)
+        {
+            rangeVisualizer.Configure(cctvData, eyePoint, obstacleLayer);
+        }
+
         detection = 0f;
         isPlayerVisible = false;
         isAlertSent = false;

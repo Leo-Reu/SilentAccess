@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a3849117d0c6e4092ab7612ada778e, type: 3}
   m_Name: CCTVData
   m_EditorClassIdentifier: Assembly-CSharp::CCTVData
-  visionRange: 15
-  visionAngle: 80
+  visionRange: 8
+  visionAngle: 60
   detectionSpeed: 0.8
   detectionDecreaseSpeed: 0.6
   detectionThreshold: 1
-  alertRadius: 20
