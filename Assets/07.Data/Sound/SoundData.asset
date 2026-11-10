@@ -14,11 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundData
   bgmList:
   - bgmType: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 2ce1297024af39340bb2245d7a39eaeb, type: 3}
+    volume: 0.6
   - bgmType: 1
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: e5f72de1ca05ac84aace84a73cf93fb7, type: 3}
+    volume: 0.4
   - bgmType: 2
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: d73e3428d6c632746bc7f7bb9774a041, type: 3}
+    volume: 0.15
   sfxList:
   - sfxType: 0
     clip: {fileID: 8300000, guid: af9c2a92fa16e4b0cb9b375d462a9f3f, type: 3}

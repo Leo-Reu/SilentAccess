@@ -52,6 +52,9 @@ public class BGMData
 {
     public BGMType bgmType;
     public AudioClip clip;
+
+    [Range(0f, 1f)]
+    public float volume = 1f;
 }
 
 [CreateAssetMenu(fileName = "SoundData", menuName = "Silent Access/Audio/Sound Data")]
