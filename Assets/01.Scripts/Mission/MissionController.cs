@@ -57,6 +57,7 @@ public class MissionController : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1f;
+        SoundManager.Instance?.PlayBGM(BGMType.Stealth);
 
         if (mainServer == null)
         {
@@ -167,6 +168,8 @@ public class MissionController : MonoBehaviour
 
         CurrentResult = MissionResult.Success;
 
+        SoundManager.Instance?.FadeOutBGM();
+
         Debug.Log("[MissionController] Mission Complete");
 
         OnMissionEnded?.Invoke(CurrentResult);
@@ -180,6 +183,8 @@ public class MissionController : MonoBehaviour
         }
 
         CurrentResult = MissionResult.Failed;
+
+        SoundManager.Instance?.FadeOutBGM();
 
         Debug.Log("[MissionController] Mission Failed");
 

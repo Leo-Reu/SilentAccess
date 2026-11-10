@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -14,18 +15,20 @@ public class SoundManager : MonoBehaviour
     [Header("Sound Data")]
     [SerializeField] private SoundData soundData;
 
-    [Header("BGM")]
-    [SerializeField] private bool playBgmOnStart = true;
+    [Header("BGM Transition")]
+    [SerializeField, Range(0f, 1f)] private float alertBgmVolume = 0.15f;
+    [SerializeField, Min(0.01f)] private float bgmFadeDuration = 0.5f;
 
     [Header("Detection")]
     [SerializeField, Min(0f)] private float detectionSoundCooldown = 2f;
 
     private readonly Dictionary<SFXType, SFXData> sfxDict = new Dictionary<SFXType, SFXData>();
-    private readonly Dictionary<BGMType, AudioClip> bgmDict = new Dictionary<BGMType, AudioClip>();
+    private readonly Dictionary<BGMType, BGMData> bgmDict = new Dictionary<BGMType, BGMData>();
 
     private AudioSource bgmSource;
     private AudioSource sfxSource;
     private AudioSource downloadSource;
+    private Coroutine bgmTransitionCoroutine;
 
     private float lastCCTVDetectionTime = float.NegativeInfinity;
     private float lastGuardDetectionTime = float.NegativeInfinity;
@@ -68,14 +71,6 @@ public class SoundManager : MonoBehaviour
 
         InitializeAudioSources();
         InitSoundDictionary();
-    }
-
-    private void Start()
-    {
-        if (playBgmOnStart)
-        {
-            PlayBGM();
-        }
     }
 
     private void OnDestroy()
@@ -171,7 +166,7 @@ public class SoundManager : MonoBehaviour
                     continue;
                 }
 
-                bgmDict.Add(data.bgmType, data.clip);
+                bgmDict.Add(data.bgmType, data);
             }
         }
     }
@@ -335,10 +330,19 @@ public class SoundManager : MonoBehaviour
     // Security Alert
     public void PlaySecurityAlert()
     {
+        if (!TryGetSFXData(SFXType.SecurityAlert, out SFXData data))
+        {
+            Debug.LogWarning("[SoundManager] SecurityAlert SFX를 찾을 수 없습니다.");
+            return;
+        }
+
         PlaySFX(SFXType.SecurityAlert);
+
+        CancelBGMTransition();
+        bgmTransitionCoroutine = StartCoroutine(TransitionToEscapeBGM(data.clip.length));
     }
 
-    // Throw Sound - 추후 투척물 연동
+    // Throw Sound
     public void PlayThrow()
     {
         PlaySFX(SFXType.Throw);
@@ -352,20 +356,28 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBGM(BGMType type)
     {
-        if (!bgmDict.TryGetValue(type, out AudioClip clip))
+        if (!bgmDict.TryGetValue(type, out BGMData data) || data == null || data.clip == null)
         {
             return;
         }
 
-        PlayBGM(clip);
+        PlayBGM(data.clip, data.volume);
     }
 
     public void PlayBGM(AudioClip clip)
+    {
+        PlayBGM(clip, 1f);
+    }
+
+    private void PlayBGM(AudioClip clip, float volume)
     {
         if (bgmSource == null || clip == null)
         {
             return;
         }
+
+        CancelBGMTransition();
+        bgmSource.volume = Mathf.Clamp01(volume);
 
         if (bgmSource.clip == clip && bgmSource.isPlaying)
         {
@@ -377,13 +389,108 @@ public class SoundManager : MonoBehaviour
         bgmSource.loop = true;
         bgmSource.Play();
     }
-
     public void StopBGM()
     {
+        CancelBGMTransition();
+
         if (bgmSource != null)
         {
             bgmSource.Stop();
+            bgmSource.volume = 1f;
         }
+    }
+    public void FadeOutBGM()
+    {
+        CancelBGMTransition();
+
+        if (bgmSource == null || !bgmSource.isPlaying)
+        {
+            return;
+        }
+
+        bgmTransitionCoroutine = StartCoroutine(FadeOutBGMCoroutine());
+    }
+
+    private void CancelBGMTransition()
+    {
+        if (bgmTransitionCoroutine != null)
+        {
+            StopCoroutine(bgmTransitionCoroutine);
+            bgmTransitionCoroutine = null;
+        }
+    }
+
+    private IEnumerator FadeOutBGMCoroutine()
+    {
+        float startVolume = bgmSource.volume;
+        float elapsed = 0f;
+
+        while (elapsed < bgmFadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            bgmSource.volume = Mathf.Lerp(startVolume, 0f, Mathf.Clamp01(elapsed / bgmFadeDuration));
+
+            yield return null;
+        }
+
+        bgmSource.Stop();
+        bgmSource.volume = 1f;
+        bgmTransitionCoroutine = null;
+    }
+
+    private IEnumerator TransitionToEscapeBGM(float alertDuration)
+    {
+        float startVolume = bgmSource.volume;
+        float alertVolume = startVolume * alertBgmVolume;
+        float elapsed = 0f;
+
+        while (elapsed < bgmFadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+
+            if (bgmSource.isPlaying)
+            {
+                bgmSource.volume = Mathf.Lerp(startVolume, alertVolume, Mathf.Clamp01(elapsed / bgmFadeDuration));
+            }
+
+            yield return null;
+        }
+
+        if (bgmSource.isPlaying)
+        {
+            bgmSource.volume = alertVolume;
+        }
+
+        yield return new WaitForSecondsRealtime(Mathf.Max(0f, alertDuration - elapsed));
+
+        if (!bgmDict.TryGetValue(BGMType.Escape, out BGMData data) || data == null || data.clip == null)
+        {
+            Debug.LogWarning("[SoundManager] Escape BGM이 연결되지 않았습니다.");
+            bgmSource.Stop();
+            bgmSource.volume = 1f;
+            bgmTransitionCoroutine = null;
+            yield break;
+        }
+
+        float targetVolume = Mathf.Clamp01(data.volume);
+
+        bgmSource.Stop();
+        bgmSource.clip = data.clip;
+        bgmSource.volume = 0f;
+        bgmSource.Play();
+
+        elapsed = 0f;
+
+        while (elapsed < bgmFadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            bgmSource.volume = Mathf.Lerp(0f, targetVolume, Mathf.Clamp01(elapsed / bgmFadeDuration));
+
+            yield return null;
+        }
+
+        bgmSource.volume = targetVolume;
+        bgmTransitionCoroutine = null;
     }
 
     public void PauseBGM()

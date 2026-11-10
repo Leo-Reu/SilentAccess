@@ -49,7 +49,8 @@ MonoBehaviour:
   bgmGroup: {fileID: -2978431112213772921, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
   sfxGroup: {fileID: 3144930801787435913, guid: 448a8ce043dbee740969eb43129d10b5, type: 2}
   soundData: {fileID: 11400000, guid: 998255a4dcae9614ab480591599bcf98, type: 2}
-  playBgmOnStart: 1
+  alertBgmVolume: 0.15
+  bgmFadeDuration: 0.5
   detectionSoundCooldown: 2
 --- !u!82 &6925891600648287384
 AudioSource:
@@ -161,7 +162,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0

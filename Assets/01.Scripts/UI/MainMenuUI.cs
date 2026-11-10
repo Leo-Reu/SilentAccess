@@ -11,6 +11,8 @@ public class MainMenuUI : MonoBehaviour
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        SoundManager.Instance?.PlayBGM(BGMType.MainMenu);
     }
 
     public void StartGame()
