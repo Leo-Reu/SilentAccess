@@ -16,6 +16,7 @@ public class GuardController : MonoBehaviour
 
     [Header("Director")]
     [SerializeField] private AdaptiveSecurityDirector securityDirector;
+    [SerializeField, Min(1f)] private float supportSpeedMultiplier = 1.5f;
 
     private float baseMoveSpeed;
     private float nextInvestigateNoiseTime;
@@ -193,6 +194,8 @@ public class GuardController : MonoBehaviour
             directorSupportSource = sourceGuard;
             directorSupportBlock = isBlockRole;
             directorBlockLookPosition = lastKnownPosition;
+
+            UpdateMoveSpeed();
         }
     }
 
@@ -216,6 +219,7 @@ public class GuardController : MonoBehaviour
         GuardController sourceGuard = directorSupportSource;
         directorSupportSource = null;
         directorSupportBlock = false;
+        UpdateMoveSpeed();
 
         if (securityDirector == null)
         {
@@ -256,15 +260,13 @@ public class GuardController : MonoBehaviour
             return;
         }
 
-        float missionMultiplier =
-            IsAlerted ? alertSpeedMultiplier : 1f;
+        float missionMultiplier = IsAlerted ? alertSpeedMultiplier : 1f;
 
-        float directorMultiplier =
-            securityDirector != null
-                ? securityDirector.MoveSpeedMultiplier : 1f;
+        float directorMultiplier = securityDirector != null ? securityDirector.MoveSpeedMultiplier : 1f;
 
-        agent.speed =
-            baseMoveSpeed * missionMultiplier * directorMultiplier;
+        float supportMultiplier = directorSupportSource != null ? supportSpeedMultiplier : 1f;
+
+        agent.speed = baseMoveSpeed * missionMultiplier * directorMultiplier * supportMultiplier;
     }
 
     public void RefreshDirectorResponse()
