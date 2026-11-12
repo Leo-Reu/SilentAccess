@@ -1,6 +1,8 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using UnityEngine.EventSystems;
 
 public class MissionResultUI : MonoBehaviour
 {
@@ -83,6 +85,8 @@ public class MissionResultUI : MonoBehaviour
 
         resultPanel.SetActive(true);
 
+        StartCoroutine(SelectRetryButton());
+
         // 미션 결과에 따라 성공 또는 실패 효과음 재생
         if (SoundManager.Instance != null)
         {
@@ -102,6 +106,19 @@ public class MissionResultUI : MonoBehaviour
         }
 
         Time.timeScale = 0f;
+    }
+
+    private IEnumerator SelectRetryButton()
+    {
+        yield return null;
+
+        if (retryBtn == null || EventSystem.current == null || !retryBtn.IsActive() || !retryBtn.IsInteractable())
+        {
+            yield break;
+        }
+
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(retryBtn.gameObject);
     }
 
     private void Retry()
