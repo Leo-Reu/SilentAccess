@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MainServer : MonoBehaviour, IInteractable
 {
@@ -51,7 +52,10 @@ public class MainServer : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if (currentPlayer != null && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        bool cancelPressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        bool gamepadCancelPressed = Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame;
+
+        if (currentPlayer != null && (cancelPressed || gamepadCancelPressed))
         {
             ClosePanel();
             return;
@@ -85,6 +89,7 @@ public class MainServer : MonoBehaviour, IInteractable
 
         serverPanel.SetActive(true);
         UpdateUI();
+        SelectButton(startDownloadBtn != null && startDownloadBtn.IsInteractable() ? startDownloadBtn : closeBtn);
 
         SoundManager.Instance?.PlayOpen();
     }
@@ -100,6 +105,7 @@ public class MainServer : MonoBehaviour, IInteractable
         isDownloading = true;
 
         UpdateUI();
+        SelectButton(closeBtn);
 
         SoundManager.Instance?.PlayDownloadProgress();
 
@@ -166,6 +172,8 @@ public class MainServer : MonoBehaviour, IInteractable
             Debug.Log("[MainServer] Download cancelled");
         }
 
+        ClearSelectedButton();
+
         if (serverPanel != null)
         {
             serverPanel.SetActive(false);
@@ -229,6 +237,25 @@ public class MainServer : MonoBehaviour, IInteractable
         else
         {
             statusText.text = "다운로드 준비 완료";
+        }
+    }
+
+    private void SelectButton(Button button)
+    {
+        if (button == null || EventSystem.current == null || !button.IsActive() || !button.IsInteractable())
+        {
+            return;
+        }
+
+        ClearSelectedButton();
+        EventSystem.current.SetSelectedGameObject(button.gameObject);
+    }
+
+    private void ClearSelectedButton()
+    {
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
         }
     }
 

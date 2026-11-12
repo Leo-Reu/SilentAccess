@@ -2,6 +2,7 @@
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PauseMenuUI : MonoBehaviour
 {
@@ -11,17 +12,36 @@ public class PauseMenuUI : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject howToPlayPanel;
+    [SerializeField] private Button resumeButton;
 
     [Header("Scene")]
     [SerializeField] private string mainSceneName = "MainScene";
 
     [SerializeField] private SettingsUI settingsUI;
 
+    private InputAction pauseAction;
+
     private void Awake()
     {
         if (pausePanel != null)
         {
             pausePanel.SetActive(false);
+        }
+
+        if (howToPlayPanel != null)
+        {
+            howToPlayPanel.SetActive(false);
+        }
+
+        if (player != null)
+        {
+            PlayerInput playerInput = player.GetComponent<PlayerInput>();
+
+            if (playerInput != null)
+            {
+                pauseAction = playerInput.actions["Pause"];
+            }
         }
     }
 
@@ -48,18 +68,30 @@ public class PauseMenuUI : MonoBehaviour
             return;
         }
 
-        if (Keyboard.current == null || !Keyboard.current.escapeKey.wasPressedThisFrame)
+        bool pausePressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        bool gamepadPausePressed = pauseAction != null && pauseAction.WasPressedThisFrame();
+        bool gamepadCancelPressed = Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame;
+
+        if (howToPlayPanel != null && howToPlayPanel.activeSelf)
         {
+            if (pausePressed || gamepadPausePressed || gamepadCancelPressed)
+            {
+                CloseHowToPlay();
+            }
+
             return;
         }
 
-        // 미션 종료 상태에서는 ESC 입력 무시
         if (missionController != null && missionController.CurrentResult != MissionResult.None)
         {
             return;
         }
 
-        // 일시 정지 중이면 게임 재개
+        if (!pausePressed && !gamepadPausePressed)
+        {
+            return;
+        }
+
         if (pausePanel != null && pausePanel.activeSelf)
         {
             ResumeGame();
@@ -71,13 +103,11 @@ public class PauseMenuUI : MonoBehaviour
             return;
         }
 
-        // 다른 UI를 조작 중이면 일시 정지하지 않음
         if (!player.CanInteract)
         {
             return;
         }
 
-        // 터미널을 ESC로 닫은 프레임에는 Pause가 열리지 않도록 방지
         if (player.LastControlEnabledFrame == Time.frameCount)
         {
             return;
@@ -103,10 +133,46 @@ public class PauseMenuUI : MonoBehaviour
         player.SetControlEnabled(false);
         Time.timeScale = 0f;
         pausePanel.SetActive(true);
+        SelectResumeButton();
 
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.PlayOpen();
+        }
+    }
+
+    public void OpenHowToPlay()
+    {
+        if (pausePanel == null || howToPlayPanel == null || !pausePanel.activeSelf)
+        {
+            return;
+        }
+
+        ClearSelectedButton();
+        pausePanel.SetActive(false);
+        howToPlayPanel.SetActive(true);
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayOpen();
+        }
+    }
+
+    public void CloseHowToPlay()
+    {
+        if (pausePanel == null || howToPlayPanel == null || !howToPlayPanel.activeSelf)
+        {
+            return;
+        }
+
+        ClearSelectedButton();
+        howToPlayPanel.SetActive(false);
+        pausePanel.SetActive(true);
+        SelectResumeButton();
+
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayClose();
         }
     }
 
@@ -165,12 +231,27 @@ public class PauseMenuUI : MonoBehaviour
             pausePanel.SetActive(false);
         }
 
+        if (howToPlayPanel != null)
+        {
+            howToPlayPanel.SetActive(false);
+        }
+
         if (player != null)
         {
             player.SetControlEnabled(false);
         }
 
         Time.timeScale = 0f;
+    }
+    private void SelectResumeButton()
+    {
+        if (resumeButton == null || EventSystem.current == null || !resumeButton.IsActive() || !resumeButton.IsInteractable())
+        {
+            return;
+        }
+
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
     }
 
     private void ClearSelectedButton()

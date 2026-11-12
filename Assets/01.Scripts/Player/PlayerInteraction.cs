@@ -15,6 +15,7 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Interaction UI")]
     [SerializeField] private GameObject interactionPromptPanel;
     [SerializeField] private TextMeshProUGUI interactionPromptText;
+    [SerializeField] private TextMeshProUGUI interactionKeyText;
 
     private PlayerInput playerInput;
     private PlayerController playerController;
@@ -27,6 +28,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private InputAction interactAction;
     private InputAction throwAction;
+
+    private string lastControlScheme;
 
     private ThrowableObject heldObject;
 
@@ -52,6 +55,11 @@ public class PlayerInteraction : MonoBehaviour
         {
             SetInteractionPromptVisible(false);
             return;
+        }
+
+        if (interactionPromptPanel != null && interactionPromptPanel.activeSelf && playerInput != null && lastControlScheme != playerInput.currentControlScheme)
+        {
+            RefreshInteractionKeyText();
         }
 
         UpdateInteractionPrompt();
@@ -181,10 +189,83 @@ public class PlayerInteraction : MonoBehaviour
 
     private void SetInteractionPromptVisible(bool visible)
     {
-        if (interactionPromptPanel != null && interactionPromptPanel.activeSelf != visible)
+        if (interactionPromptPanel == null || interactionPromptPanel.activeSelf == visible)
         {
-            interactionPromptPanel.SetActive(visible);
+            return;
+        }
+
+        interactionPromptPanel.SetActive(visible);
+
+        if (visible)
+        {
+            RefreshInteractionKeyText();
         }
     }
+    private void RefreshInteractionKeyText()
+    {
+        if (interactionKeyText == null || interactAction == null || playerInput == null)
+        {
+            return;
+        }
 
+        lastControlScheme = playerInput.currentControlScheme;
+
+        int bindingIndex = -1;
+
+        if (!string.IsNullOrEmpty(lastControlScheme))
+        {
+            bindingIndex = interactAction.GetBindingIndex(InputBinding.MaskByGroup(lastControlScheme));
+        }
+
+        if (bindingIndex < 0)
+        {
+            for (int i = 0; i < interactAction.bindings.Count; i++)
+            {
+                string path = interactAction.bindings[i].effectivePath;
+
+                if (!string.IsNullOrEmpty(path) && path.StartsWith("<Keyboard>"))
+                {
+                    bindingIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (bindingIndex < 0)
+        {
+            return;
+        }
+
+        string keyName = interactAction.GetBindingDisplayString(bindingIndex);
+
+        if (string.IsNullOrEmpty(keyName))
+        {
+            return;
+        }
+
+        switch (keyName.ToLowerInvariant())
+        {
+            case "left ctrl":
+            case "right ctrl":
+            case "ctrl":
+                keyName = "CTRL";
+                break;
+
+            case "left shift":
+            case "right shift":
+            case "shift":
+                keyName = "SHIFT";
+                break;
+
+            case "left mouse button":
+                keyName = "LMB";
+                break;
+
+            case "right mouse button":
+                keyName = "RMB";
+                break;
+        }
+
+        interactionKeyText.text = keyName;
+    }
 }

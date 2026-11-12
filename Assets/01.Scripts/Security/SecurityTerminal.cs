@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class SecurityTerminal : MonoBehaviour, IInteractable
 {
@@ -44,9 +45,10 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if (currentPlayer != null &&
-            Keyboard.current != null &&
-            Keyboard.current.escapeKey.wasPressedThisFrame)
+        bool cancelPressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        bool gamepadCancelPressed = Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame;
+
+        if (currentPlayer != null && (cancelPressed || gamepadCancelPressed))
         {
             CloseTerminal();
         }
@@ -83,6 +85,7 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         terminalPanel.SetActive(true);
 
         UpdateUI();
+        SelectButton(disableCCTVBtn != null && disableCCTVBtn.IsInteractable() ? disableCCTVBtn : closeBtn);
 
         if (SoundManager.Instance != null)
         {
@@ -124,6 +127,7 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         remainTime = Mathf.Max(0.1f, disableDuration);
 
         UpdateUI();
+        SelectButton(closeBtn);
 
         SoundManager.Instance?.PlayConfirm();
     }
@@ -154,6 +158,8 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
             return;
         }
 
+        ClearSelectedButton();
+
         if (terminalPanel != null)
         {
             terminalPanel.SetActive(false);
@@ -163,9 +169,9 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         currentPlayer = null;
 
         if (SoundManager.Instance != null)
-{
-    SoundManager.Instance.PlayClose();
-}
+        {
+            SoundManager.Instance.PlayClose();
+        }
     }
 
     private void UpdateUI()
@@ -194,9 +200,27 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
         statusText.text = isCCTVDisabled ? $"CCTV 비활성화 ({Mathf.CeilToInt(remainTime)}초)" : "CCTV 작동 중";
     }
 
+    private void SelectButton(Button button)
+    {
+        if (button == null || EventSystem.current == null || !button.IsActive() || !button.IsInteractable())
+        {
+            return;
+        }
+
+        ClearSelectedButton();
+        EventSystem.current.SetSelectedGameObject(button.gameObject);
+    }
+
+    private void ClearSelectedButton()
+    {
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
     private void OnDisable()
     {
-        // 터미널 UI 정리 및 플레이어 참조 해제
         if (terminalPanel != null)
         {
             terminalPanel.SetActive(false);
@@ -204,7 +228,6 @@ public class SecurityTerminal : MonoBehaviour, IInteractable
 
         currentPlayer = null;
 
-        // 비활성화된 CCTV는 기존 방식대로 복구
         if (isCCTVDisabled)
         {
             RestoreCCTV();

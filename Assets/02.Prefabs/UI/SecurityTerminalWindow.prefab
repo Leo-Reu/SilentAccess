@@ -474,6 +474,7 @@ GameObject:
   - component: {fileID: 3483086503276094243}
   - component: {fileID: 8560934371078437233}
   - component: {fileID: 7358704566916631179}
+  - component: {fileID: 3934793721087828032}
   m_Layer: 5
   m_Name: DisableCCTVBtn
   m_TagString: Untagged
@@ -563,7 +564,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0.20392157, g: 0.5568628, b: 0.9411765, a: 1}
     m_HighlightedColor: {r: 0.34509805, g: 0.7176471, b: 1, a: 1}
     m_PressedColor: {r: 0.1254902, g: 0.40392157, b: 0.68235296, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.34509805, g: 0.7176471, b: 1, a: 1}
     m_DisabledColor: {r: 0.2509804, g: 0.3254902, b: 0.3882353, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -583,6 +584,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3934793721087828032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3891092237623151861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b10dc3975cf079146abfa76d2498d5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  soundType: 1
+  enableHoverSound: 1
+  enableClickSound: 0
 --- !u!1 &4914530209227462313
 GameObject:
   m_ObjectHideFlags: 0
@@ -1057,6 +1073,7 @@ GameObject:
   - component: {fileID: 2884868469975993035}
   - component: {fileID: 4670581312189234462}
   - component: {fileID: 5120796013526569068}
+  - component: {fileID: 3724123424363883454}
   m_Layer: 5
   m_Name: CloseBtn
   m_TagString: Untagged
@@ -1144,9 +1161,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.20784314, g: 0.8627451, b: 1, a: 1}
+    m_PressedColor: {r: 0.08627451, g: 0.5529412, b: 0.6901961, a: 1}
+    m_SelectedColor: {r: 0.20784314, g: 0.8627451, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1166,6 +1183,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3724123424363883454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7466544929591295666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b10dc3975cf079146abfa76d2498d5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  soundType: 0
+  enableHoverSound: 0
+  enableClickSound: 0
 --- !u!1 &7805542153957485301
 GameObject:
   m_ObjectHideFlags: 0

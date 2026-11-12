@@ -90,8 +90,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   walkSpeed: 4
-  runSpeed: 7
+  runSpeed: 6.5
   crouchSpeed: 2
   gravity: -9.8
   cameraRoot: {fileID: 8767180542203093409}
@@ -134,6 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLook
   cameraRoot: {fileID: 8767180542203093409}
   mouseSensitivity: 0.1
+  gamepadSensitivity: 150
 --- !u!114 &8696539711344537924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,6 +153,7 @@ MonoBehaviour:
   throwForce: 8
   interactionPromptPanel: {fileID: 0}
   interactionPromptText: {fileID: 0}
+  interactionKeyText: {fileID: 0}
 --- !u!114 &1453891240907281015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,7 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFootstepNoise
   walkNoiseRadius: 6
-  runNoiseRadius: 12
+  runNoiseRadius: 14
   crouchNoiseRadius: 2
   walkStepInterval: 0.5
   runStepInterval: 0.35

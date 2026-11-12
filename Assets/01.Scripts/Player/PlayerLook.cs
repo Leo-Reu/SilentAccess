@@ -5,6 +5,7 @@ public class PlayerLook : MonoBehaviour
 {
     [SerializeField] private Transform cameraRoot;
     [SerializeField] private float mouseSensitivity = 0.1f;
+    [SerializeField] private float gamepadSensitivity = 150f;
 
     private PlayerInput playerInput;
     private InputAction lookAction;
@@ -29,8 +30,10 @@ public class PlayerLook : MonoBehaviour
     {
         Vector2 input = lookAction.ReadValue<Vector2>();
 
-        float mouseX = input.x * mouseSensitivity;
-        float mouseY = input.y * mouseSensitivity;
+        float sensitivity = playerInput.currentControlScheme == "Gamepad" ? gamepadSensitivity * Time.deltaTime : mouseSensitivity;
+
+        float mouseX = input.x * sensitivity;
+        float mouseY = input.y * sensitivity;
 
         transform.Rotate(Vector3.up * mouseX);
 

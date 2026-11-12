@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class AccessTerminal : MonoBehaviour, IInteractable
 {
@@ -41,7 +42,10 @@ public class AccessTerminal : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if (currentPlayer != null && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        bool cancelPressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        bool gamepadCancelPressed = Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame;
+
+        if (currentPlayer != null && (cancelPressed || gamepadCancelPressed))
         {
             CloseTerminal();
         }
@@ -61,6 +65,7 @@ public class AccessTerminal : MonoBehaviour, IInteractable
         terminalPanel.SetActive(true);
 
         UpdateUI();
+        SelectButton(unlockServerBtn != null && unlockServerBtn.IsInteractable() ? unlockServerBtn : closeBtn);
 
         if (SoundManager.Instance != null)
         {
@@ -82,6 +87,7 @@ public class AccessTerminal : MonoBehaviour, IInteractable
 
         serverDoor.Unlock();
         UpdateUI();
+        SelectButton(closeBtn);
 
         SoundManager.Instance?.PlayConfirm();
     }
@@ -142,6 +148,8 @@ public class AccessTerminal : MonoBehaviour, IInteractable
             return;
         }
 
+        ClearSelectedButton();
+
         if (terminalPanel != null)
         {
             terminalPanel.SetActive(false);
@@ -157,9 +165,27 @@ public class AccessTerminal : MonoBehaviour, IInteractable
         }
     }
 
+    private void SelectButton(Button button)
+    {
+        if (button == null || EventSystem.current == null || !button.IsActive() || !button.IsInteractable())
+        {
+            return;
+        }
+
+        ClearSelectedButton();
+        EventSystem.current.SetSelectedGameObject(button.gameObject);
+    }
+
+    private void ClearSelectedButton()
+    {
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
     private void OnDisable()
     {
-        // 오브젝트 비활성화 시 플레이어 조작을 복구하지 않음
         if (terminalPanel != null)
         {
             terminalPanel.SetActive(false);

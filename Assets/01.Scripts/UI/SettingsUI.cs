@@ -12,6 +12,10 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject returnPanel;
 
+    [Header("Navigation")]
+    [SerializeField] private Selectable firstSelected;
+    [SerializeField] private Selectable returnSelected;
+
     [Header("Display")]
     [SerializeField] private TMP_Dropdown resolutionDropdown;
     [SerializeField] private TMP_Dropdown screenModeDropdown;
@@ -55,7 +59,20 @@ public class SettingsUI : MonoBehaviour
 
     private void Update()
     {
-        if (!IsOpen || Keyboard.current == null || !Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (!IsOpen)
+        {
+            return;
+        }
+
+        bool cancelPressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        bool gamepadCancelPressed = Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame;
+
+        if (!cancelPressed && !gamepadCancelPressed)
+        {
+            return;
+        }
+
+        if ((resolutionDropdown != null && resolutionDropdown.IsExpanded) || (screenModeDropdown != null && screenModeDropdown.IsExpanded))
         {
             return;
         }
@@ -301,6 +318,7 @@ public class SettingsUI : MonoBehaviour
 
         settingsPanel.SetActive(true);
         LoadSavedValuesIntoUI();
+        SelectUI(firstSelected);
 
         if (SoundManager.Instance != null)
         {
@@ -328,6 +346,8 @@ public class SettingsUI : MonoBehaviour
             returnPanel.SetActive(true);
         }
 
+        SelectUI(returnSelected);
+
         LastClosedFrame = Time.frameCount;
 
         if (SoundManager.Instance != null)
@@ -344,5 +364,16 @@ public class SettingsUI : MonoBehaviour
         }
 
         LastClosedFrame = Time.frameCount;
+    }
+
+    private void SelectUI(Selectable selectable)
+    {
+        if (selectable == null || EventSystem.current == null || !selectable.IsActive() || !selectable.IsInteractable())
+        {
+            return;
+        }
+
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(selectable.gameObject);
     }
 }
