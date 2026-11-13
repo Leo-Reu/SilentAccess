@@ -11,6 +11,7 @@ public class SettingsUI : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject returnPanel;
+    [SerializeField] private ControlsUI controlsUI;
 
     [Header("Navigation")]
     [SerializeField] private Selectable firstSelected;
@@ -53,7 +54,6 @@ public class SettingsUI : MonoBehaviour
 
     private void Start()
     {
-        // 씬 시작 시 저장된 설정 적용
         ApplySavedSettings();
     }
 
@@ -61,6 +61,24 @@ public class SettingsUI : MonoBehaviour
     {
         if (!IsOpen)
         {
+            return;
+        }
+
+        if (controlsUI != null && controlsUI.IsOpen)
+        {
+            if (controlsUI.IsRebinding || controlsUI.LastRebindFinishedFrame == Time.frameCount)
+            {
+                return;
+            }
+
+            bool controlsEscapePressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+            bool controlsCancelPressed = Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame;
+
+            if (controlsEscapePressed || controlsCancelPressed)
+            {
+                controlsUI.CloseControls();
+            }
+
             return;
         }
 
@@ -240,12 +258,10 @@ public class SettingsUI : MonoBehaviour
 
     private void ApplyAudio(int masterVolume, int bgmVolume, int sfxVolume)
     {
-        // 전체 음량 적용
         AudioListener.volume = masterVolume / 100f;
 
         if (sfxMixer != null)
         {
-            // 배경음 음량 적용
             float bgm = Mathf.Max(bgmVolume / 100f, 0.0001f);
             float bgmDecibels = Mathf.Log10(bgm) * 20f;
 
@@ -254,7 +270,6 @@ public class SettingsUI : MonoBehaviour
                 Debug.LogWarning("AudioMixer에서 BGMVolume 노출 파라미터를 찾을 수 없습니다");
             }
 
-            // 효과음 음량 적용
             float sfx = Mathf.Max(sfxVolume / 100f, 0.0001f);
             float sfxDecibels = Mathf.Log10(sfx) * 20f;
 

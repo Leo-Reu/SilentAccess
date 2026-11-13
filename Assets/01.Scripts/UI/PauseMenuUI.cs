@@ -133,7 +133,11 @@ public class PauseMenuUI : MonoBehaviour
         player.SetControlEnabled(false);
         Time.timeScale = 0f;
         pausePanel.SetActive(true);
-        SelectResumeButton();
+
+        if (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame)
+        {
+            SelectResumeButton();
+        }
 
         if (SoundManager.Instance != null)
         {
@@ -152,6 +156,16 @@ public class PauseMenuUI : MonoBehaviour
         pausePanel.SetActive(false);
         howToPlayPanel.SetActive(true);
 
+        if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+        {
+            HowToPlayUI howToPlayUI = howToPlayPanel.GetComponent<HowToPlayUI>();
+
+            if (howToPlayUI != null)
+            {
+                howToPlayUI.SelectCurrentButton();
+            }
+        }
+
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.PlayOpen();
@@ -168,7 +182,11 @@ public class PauseMenuUI : MonoBehaviour
         ClearSelectedButton();
         howToPlayPanel.SetActive(false);
         pausePanel.SetActive(true);
-        SelectResumeButton();
+
+        if (Gamepad.current != null && (Gamepad.current.buttonSouth.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame || Gamepad.current.startButton.wasPressedThisFrame))
+        {
+            SelectResumeButton();
+        }
 
         if (SoundManager.Instance != null)
         {
@@ -186,7 +204,6 @@ public class PauseMenuUI : MonoBehaviour
         ClearSelectedButton();
         pausePanel.SetActive(false);
 
-        // 미션 종료 후에는 게임이 재개되지 않도록 방지
         if (missionController != null && missionController.CurrentResult != MissionResult.None)
         {
             player.SetControlEnabled(false);
@@ -223,7 +240,6 @@ public class PauseMenuUI : MonoBehaviour
             return;
         }
 
-        // 미션 종료 시 PausePanel을 닫고 게임 정지 상태 유지
         ClearSelectedButton();
 
         if (pausePanel != null)
@@ -243,6 +259,7 @@ public class PauseMenuUI : MonoBehaviour
 
         Time.timeScale = 0f;
     }
+
     private void SelectResumeButton()
     {
         if (resumeButton == null || EventSystem.current == null || !resumeButton.IsActive() || !resumeButton.IsInteractable())
@@ -256,7 +273,6 @@ public class PauseMenuUI : MonoBehaviour
 
     private void ClearSelectedButton()
     {
-        // 이전에 클릭한 버튼의 Selected 상태 해제
         if (EventSystem.current != null)
         {
             EventSystem.current.SetSelectedGameObject(null);
