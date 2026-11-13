@@ -36,6 +36,10 @@ public class PlayerInteraction : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        if (playerInput != null)
+        {
+            InputBindingSave.Load(playerInput.actions);
+        }
         playerController = GetComponent<PlayerController>();
         playerLook = GetComponent<PlayerLook>();
         footstepNoise = GetComponent<PlayerFootstepNoise>();

@@ -8,7 +8,7 @@ public enum UIButtonSoundType
     Terminal
 }
 
-public class UIButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
+public class UIButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, ISubmitHandler
 {
     [Header("Sound Type")]
     [SerializeField] private UIButtonSoundType soundType = UIButtonSoundType.Menu;
@@ -47,6 +47,26 @@ public class UIButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!enableClickSound || eventData.button != PointerEventData.InputButton.Left || !button.IsActive() || !button.IsInteractable())
+        {
+            return;
+        }
+
+        if (SoundManager.Instance != null)
+        {
+            if (soundType == UIButtonSoundType.Terminal)
+            {
+                SoundManager.Instance.PlayTerminalClick();
+            }
+            else
+            {
+                SoundManager.Instance.PlayClick();
+            }
+        }
+    }
+
+    public void OnSubmit(BaseEventData eventData)
+    {
+        if (!enableClickSound || button == null || !button.IsActive() || !button.IsInteractable())
         {
             return;
         }

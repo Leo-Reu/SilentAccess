@@ -78,7 +78,13 @@ public class MainMenuUI : MonoBehaviour
         }
 
         howToPlayPanel.SetActive(true);
-        SelectButton(howToPlayCloseButton);
+
+        HowToPlayUI howToPlayUI = howToPlayPanel.GetComponent<HowToPlayUI>();
+
+        if (howToPlayUI != null)
+        {
+            howToPlayUI.SelectCurrentButton();
+        }
 
         if (SoundManager.Instance != null)
         {
