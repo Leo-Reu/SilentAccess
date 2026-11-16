@@ -32,6 +32,7 @@ public class MainMenuUI : MonoBehaviour
             howToPlayPanel.SetActive(false);
         }
 
+        SoundManager.Instance?.StopAllSFX();
         SoundManager.Instance?.PlayBGM(BGMType.MainMenu);
     }
     private void Start()
