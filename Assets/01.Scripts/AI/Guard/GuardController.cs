@@ -18,18 +18,9 @@ public class GuardController : MonoBehaviour
     [SerializeField] private AdaptiveSecurityDirector securityDirector;
     [SerializeField, Min(1f)] private float supportSpeedMultiplier = 1.5f;
 
-    private float baseMoveSpeed;
-    private float nextInvestigateNoiseTime;
-
-    public bool IsAlerted { get; private set; }
-
     private NavMeshAgent agent;
     private GuardHearing hearing;
-    private GuardVision vision; 
-    private GuardController directorSupportSource;
-
-    private bool directorSupportBlock;
-    private Vector3 directorBlockLookPosition;
+    private GuardVision vision;
 
     private StateMachine<GuardController> stateMachine;
 
@@ -39,9 +30,18 @@ public class GuardController : MonoBehaviour
     private GuardChaseState chaseState;
     private GuardSearchState searchState;
 
+    private GuardController directorSupportSource;
+    private bool directorSupportBlock;
+    private Vector3 directorBlockLookPosition;
+
+    private float baseMoveSpeed;
+    private float nextInvestigateNoiseTime;
+
     private Vector3 investigatePos;
     private Vector3 lastKnownPos;
     private int patrolIndex;
+
+    public bool IsAlerted { get; private set; }
 
     public NavMeshAgent Agent => agent;
     public GuardData Data => guardData;
@@ -51,48 +51,17 @@ public class GuardController : MonoBehaviour
     public Vector3 LastKnownPos => lastKnownPos;
     public string CurrentStateName => stateMachine?.CurrentState?.GetType().Name ?? "None";
 
-    public float PatrolWaitDuration =>
-        guardData.patrolWaitTime *
-        (securityDirector != null
-            ? securityDirector.PatrolWaitMultiplier : 1f);
+    public float PatrolWaitDuration => guardData.patrolWaitTime * (securityDirector != null ? securityDirector.PatrolWaitMultiplier : 1f);
+    public float InvestigateDuration => guardData.investigateTime * (securityDirector != null ? securityDirector.InvestigateTimeMultiplier : 1f);
+    public float SearchDuration => guardData.searchTime * (securityDirector != null ? securityDirector.SearchTimeMultiplier : 1f);
 
-    public float InvestigateDuration =>
-        guardData.investigateTime *
-        (securityDirector != null
-            ? securityDirector.InvestigateTimeMultiplier : 1f);
+    public bool CanInvestigate => isActiveAndEnabled && agent != null && agent.isOnNavMesh && stateMachine != null && stateMachine.CurrentState != suspiciousState && stateMachine.CurrentState != chaseState;
+    public bool CanAssist => isActiveAndEnabled && agent != null && agent.isOnNavMesh && stateMachine != null && stateMachine.CurrentState == patrolState;
+    public bool IsChasing => stateMachine != null && stateMachine.CurrentState == chaseState;
 
-    public float SearchDuration =>
-        guardData.searchTime *
-        (securityDirector != null
-            ? securityDirector.SearchTimeMultiplier : 1f);
-
-
-    public bool CanInvestigate =>
-        isActiveAndEnabled &&
-        agent != null &&
-        agent.isOnNavMesh &&
-        stateMachine != null &&
-        stateMachine.CurrentState != suspiciousState &&
-        stateMachine.CurrentState != chaseState;
-
-    public bool CanAssist =>
-        isActiveAndEnabled &&
-        agent != null &&
-        agent.isOnNavMesh &&
-        stateMachine != null &&
-        stateMachine.CurrentState == patrolState;
-
-    public bool IsChasing =>
-        stateMachine != null &&
-        stateMachine.CurrentState == chaseState;
-
-    public bool IsDirectorBlocking =>
-        directorSupportSource != null &&
-        directorSupportBlock;
-    public Vector3 DirectorBlockLookPosition =>
-        directorBlockLookPosition;
-    public float DirectorBlockWatchDuration =>
-        securityDirector != null ? Mathf.Max(InvestigateDuration, securityDirector.BlockWatchDuration) : InvestigateDuration;
+    public bool IsDirectorBlocking => directorSupportSource != null && directorSupportBlock;
+    public Vector3 DirectorBlockLookPosition => directorBlockLookPosition;
+    public float DirectorBlockWatchDuration => securityDirector != null ? Mathf.Max(InvestigateDuration, securityDirector.BlockWatchDuration) : InvestigateDuration;
 
     private void Awake()
     {
@@ -174,7 +143,6 @@ public class GuardController : MonoBehaviour
         Investigate(noiseData.position);
     }
 
-
     public void OnCCTVDetected(Vector3 detectedPos)
     {
         Investigate(detectedPos);
@@ -217,8 +185,10 @@ public class GuardController : MonoBehaviour
         }
 
         GuardController sourceGuard = directorSupportSource;
+
         directorSupportSource = null;
         directorSupportBlock = false;
+
         UpdateMoveSpeed();
 
         if (securityDirector == null)
@@ -261,9 +231,7 @@ public class GuardController : MonoBehaviour
         }
 
         float missionMultiplier = IsAlerted ? alertSpeedMultiplier : 1f;
-
         float directorMultiplier = securityDirector != null ? securityDirector.MoveSpeedMultiplier : 1f;
-
         float supportMultiplier = directorSupportSource != null ? supportSpeedMultiplier : 1f;
 
         agent.speed = baseMoveSpeed * missionMultiplier * directorMultiplier * supportMultiplier;
@@ -340,7 +308,6 @@ public class GuardController : MonoBehaviour
 
     public void ChangeToSuspicious()
     {
-        // 실제로 플레이어가 보일 때만 의심 상태 진입
         if (vision == null || !vision.IsPlayerVisible)
         {
             return;
@@ -349,7 +316,6 @@ public class GuardController : MonoBehaviour
         FinishDirectorSupport(false);
         stateMachine.ChangeState(suspiciousState);
     }
-
 
     public void ChangeToChase()
     {
@@ -435,8 +401,6 @@ public class GuardController : MonoBehaviour
         {
             securityDirector.ReportSupportCancelled(this, sourceGuard);
         }
-
-        Debug.Log($"[Director] Support cancelled: {name}");
 
         ChangeToPatrol();
     }

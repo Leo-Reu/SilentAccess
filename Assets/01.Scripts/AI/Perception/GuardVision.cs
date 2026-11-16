@@ -19,8 +19,8 @@ public class GuardVision : MonoBehaviour
 
     public float Detection => detection;
     public bool IsPlayerVisible => isPlayerVisible;
-    public bool IsPartiallyDetected => guardData != null && detection >= guardData.suspiciousThreshold; // 부분적 감지
-    public bool IsFullyDetected => guardData != null && detection >= guardData.detectionThreshold;      // 완전 감지
+    public bool IsPartiallyDetected => guardData != null && detection >= guardData.suspiciousThreshold;
+    public bool IsFullyDetected => guardData != null && detection >= guardData.detectionThreshold;
     public Transform Player => player;
 
     private void Awake()
@@ -57,7 +57,6 @@ public class GuardVision : MonoBehaviour
             return false;
         }
 
-        // Chase 상태에서는 확장된 시야 범위를 사용
         bool isChasing = guardController != null && guardController.IsChasing;
 
         float currentVisionRange = isChasing ? guardData.chaseVisionRange : guardData.visionRange;
@@ -90,6 +89,12 @@ public class GuardVision : MonoBehaviour
 
     private void UpdateDetection()
     {
+        if (guardData == null)
+        {
+            detection = 0f;
+            return;
+        }
+
         if (isPlayerVisible)
         {
             detection += guardData.detectionSpeed * Time.deltaTime;

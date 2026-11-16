@@ -16,7 +16,7 @@ public class GuardSuspiciousState : IState<GuardController>
     {
         if (owner.Vision.IsPlayerVisible)
         {
-            // 플레이어를 보고 있는 동안 마지막 목격 위치 갱신
+            // 플레이어가 보이는 동안 마지막 목격 위치 갱신
             owner.UpdateLastKnownPosition();
 
             if (owner.Vision.IsFullyDetected)
@@ -29,7 +29,7 @@ public class GuardSuspiciousState : IState<GuardController>
             return;
         }
 
-        // 플레이어를 놓쳤다면 마지막 목격 위치로 조사 이동
+        // 시야를 잃으면 마지막 목격 위치 조사
         owner.InvestigateLastKnownPosition();
     }
 

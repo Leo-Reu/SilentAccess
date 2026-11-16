@@ -4,7 +4,7 @@ public class GuardPatrolRoute : MonoBehaviour
 {
     [SerializeField] private Transform[] patrolPoints;
 
-    public int Count => patrolPoints.Length;
+    public int Count => patrolPoints != null ? patrolPoints.Length : 0;
 
     public Transform GetPoint(int index)
     {

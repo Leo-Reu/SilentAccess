@@ -69,7 +69,6 @@ public class GuardAnimationController : MonoBehaviour
             stepTimer = 0f;
         }
 
-        // 실제 이동 속도에 따라 발걸음 간격 보정
         float baseSpeed = isRunning ? guard.Data.chaseSpeed : guard.Data.patrolSpeed;
         float speedMultiplier = Mathf.Clamp(speed / Mathf.Max(0.1f, baseSpeed), 0.7f, 1.5f);
 
