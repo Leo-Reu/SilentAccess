@@ -81,7 +81,6 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    // AudioSource 초기화
     private void InitializeAudioSources()
     {
         AudioSource[] sources = GetComponents<AudioSource>();
@@ -116,7 +115,6 @@ public class SoundManager : MonoBehaviour
         downloadSource.outputAudioMixerGroup = sfxGroup;
     }
 
-    // SoundData를 Dictionary로 캐싱
     private void InitSoundDictionary()
     {
         sfxDict.Clear();
@@ -189,7 +187,6 @@ public class SoundManager : MonoBehaviour
         return true;
     }
 
-    // 공통 SFX 재생
     public void PlaySFX(SFXType type)
     {
         if (sfxSource == null || !TryGetSFXData(type, out SFXData data))
@@ -199,6 +196,11 @@ public class SoundManager : MonoBehaviour
 
         sfxSource.PlayOneShot(data.clip, data.volume);
     }
+    public void StopAllSFX()
+    {
+        if (sfxSource != null) sfxSource.Stop();
+        if (downloadSource != null) downloadSource.Stop();
+    }
 
     public void PlaySFXAtPosition(SFXType type, Vector3 position)
     {
@@ -207,7 +209,6 @@ public class SoundManager : MonoBehaviour
             return;
         }
 
-        // 효과음을 재생할 임시 3D 오브젝트 생성
         GameObject soundObject = new GameObject($"3D SFX - {type}");
         soundObject.transform.position = position;
 
@@ -224,11 +225,9 @@ public class SoundManager : MonoBehaviour
 
         source.PlayOneShot(data.clip, data.volume);
 
-        // 클립 재생이 끝나면 임시 오브젝트 제거
         Destroy(soundObject, data.clip.length + 0.1f);
     }
 
-    // UI Sound
     public void PlayHover() => PlaySFX(SFXType.UIHover);
     public void PlayClick() => PlaySFX(SFXType.UIClick);
     public void PlayOpen() => PlaySFX(SFXType.UIOpen);
@@ -258,16 +257,13 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    // System Sound
     public void PlayConfirm() => PlaySFX(SFXType.Confirm);
     public void PlayError() => PlaySFX(SFXType.Error);
     public void PlayNotification() => PlaySFX(SFXType.Notification);
 
-    // Mission Sound
     public void PlayMissionSuccess() => PlaySFX(SFXType.MissionSuccess);
     public void PlayMissionFail() => PlaySFX(SFXType.MissionFail);
 
-    // Detection Sound
     public void PlayCCTVDetection()
     {
         if (Time.timeScale <= 0f || !TryGetSFXData(SFXType.CCTVDetection, out _))
@@ -300,7 +296,6 @@ public class SoundManager : MonoBehaviour
         PlaySFX(SFXType.GuardDetection);
     }
 
-    // Download Sound
     public void PlayDownloadProgress()
     {
         if (downloadSource == null || !TryGetSFXData(SFXType.DownloadProgress, out SFXData data))
@@ -327,7 +322,6 @@ public class SoundManager : MonoBehaviour
         PlaySFX(SFXType.DownloadComplete);
     }
 
-    // Security Alert
     public void PlaySecurityAlert()
     {
         if (!TryGetSFXData(SFXType.SecurityAlert, out SFXData data))
@@ -342,13 +336,11 @@ public class SoundManager : MonoBehaviour
         bgmTransitionCoroutine = StartCoroutine(TransitionToEscapeBGM(data.clip.length));
     }
 
-    // Throw Sound
     public void PlayThrow()
     {
         PlaySFX(SFXType.Throw);
     }
 
-    // BGM
     public void PlayBGM()
     {
         PlayBGM(BGMType.MainMenu);

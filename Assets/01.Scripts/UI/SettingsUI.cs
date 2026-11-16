@@ -108,6 +108,8 @@ public class SettingsUI : MonoBehaviour
         {
             Vector2Int size = new Vector2Int(supportedResolutions[i].width, supportedResolutions[i].height);
 
+            if (size.x < 1280 || size.y < 720) continue;
+
             if (!resolutions.Contains(size))
             {
                 resolutions.Add(size);
