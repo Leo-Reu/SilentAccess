@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using System;
+
 public class SecurityDoor : MonoBehaviour
 {
     public enum AccessMode
@@ -33,7 +34,6 @@ public class SecurityDoor : MonoBehaviour
     private float point;
     private bool opening;
     private bool isUnlocked;
-    private bool guardTriggerLogged;
 
     public bool IsUnlocked => isUnlocked;
     public event Action OnUnlocked;
@@ -63,32 +63,10 @@ public class SecurityDoor : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         UpdateOccupant(other);
-
-        if (HasAccess(other) || other.GetComponentInParent<PlayerInventory>() == null)
-        {
-            return;
-        }
-
-        if (accessMode == AccessMode.Keycard)
-        {
-            Debug.Log("보안실 출입에는 카드키가 필요합니다.");
-        }
-        else
-        {
-            Debug.Log("서버실이 잠겨 있습니다.");
-        }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        GuardController guard = other.GetComponentInParent<GuardController>();
-
-        if (guard != null && isUnlocked && !guardTriggerLogged)
-        {
-            guardTriggerLogged = true;
-            Debug.Log($"[ServerDoor] Guard: {guard.name}, HasAccess: {HasAccess(other)}");
-        }
-
         UpdateOccupant(other);
     }
 
@@ -156,7 +134,5 @@ public class SecurityDoor : MonoBehaviour
         }
 
         OnUnlocked?.Invoke();
-
-        Debug.Log("서버실 잠금 해제 완료");
     }
 }
