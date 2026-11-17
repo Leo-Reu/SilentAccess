@@ -1,9 +1,9 @@
-﻿using UnityEditor;
+﻿using Michsky.UI.Shift;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Michsky.UI.Shift;
 
 public class AddScriptToButton : Editor
 {
@@ -34,14 +34,12 @@ public class AddScriptToButton : Editor
 
             buttonCount++;
 
-            // 새로운 UIButtonSound가 없으면 추가
             if (obj.GetComponent<UIButtonSound>() == null)
             {
                 Undo.AddComponent<UIButtonSound>(obj);
                 addedCount++;
             }
 
-            // 기존 에셋의 UIElementSound 제거
             UIElementSound[] oldSounds = obj.GetComponents<UIElementSound>();
 
             for (int j = 0; j < oldSounds.Length; j++)

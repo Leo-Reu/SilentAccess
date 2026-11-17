@@ -85,22 +85,14 @@ public class SilentAccessDebugWindow : EditorWindow
         EditorGUILayout.LabelField("Security Alert", alert);
         EditorGUILayout.LabelField("Data Stolen", stolen);
 
-        AdaptiveSecurityDirector director =
-            Object.FindFirstObjectByType<AdaptiveSecurityDirector>();
+        AdaptiveSecurityDirector director = Object.FindFirstObjectByType<AdaptiveSecurityDirector>();
 
         if (director != null)
         {
             EditorGUILayout.Space(10);
 
-            EditorGUILayout.LabelField(
-                "Security Pressure",
-                director.Pressure.ToString()
-            );
-
-            EditorGUILayout.LabelField(
-                "Director Level",
-                director.CurrentLevel.ToString()
-            );
+            EditorGUILayout.LabelField("Security Pressure", director.Pressure.ToString());
+            EditorGUILayout.LabelField("Director Level", director.CurrentLevel.ToString());
 
             if (GUILayout.Button("Test CCTV Pressure (+2)"))
             {
@@ -168,8 +160,6 @@ public class SilentAccessDebugWindow : EditorWindow
         {
             controller.enabled = true;
         }
-
-        Debug.Log($"[Debug Tool] Teleported to {destination.name}");
     }
 
     private void DrawPlayer(DebugSceneRefs refs)
@@ -205,7 +195,6 @@ public class SilentAccessDebugWindow : EditorWindow
             if (invincible != mission.DebugInvincible)
             {
                 mission.SetDebugInvincible(invincible);
-                Debug.Log($"[Debug Tool] Invincible Mode: {(invincible ? "ON" : "OFF")}");
             }
         }
 
