@@ -79,11 +79,30 @@ public class ControlsUI : MonoBehaviour
 
     private void Awake()
     {
-        if (controlsBtn != null) controlsBtn.onClick.AddListener(OpenControls);
-        if (keyboardTabBtn != null) keyboardTabBtn.onClick.AddListener(ShowKeyboard);
-        if (gamepadTabBtn != null) gamepadTabBtn.onClick.AddListener(ShowGamepad);
-        if (resetBtn != null) resetBtn.onClick.AddListener(ResetBindings);
-        if (backBtn != null) backBtn.onClick.AddListener(CloseControls);
+        if (controlsBtn != null)
+        {
+            controlsBtn.onClick.AddListener(OpenControls);
+        }
+
+        if (keyboardTabBtn != null)
+        {
+            keyboardTabBtn.onClick.AddListener(ShowKeyboard);
+        }
+
+        if (gamepadTabBtn != null)
+        {
+            gamepadTabBtn.onClick.AddListener(ShowGamepad);
+        }
+
+        if (resetBtn != null)
+        {
+            resetBtn.onClick.AddListener(ResetBindings);
+        }
+
+        if (backBtn != null)
+        {
+            backBtn.onClick.AddListener(CloseControls);
+        }
 
         if (inputActions != null)
         {
@@ -112,8 +131,15 @@ public class ControlsUI : MonoBehaviour
 
     private void OnEnable()
     {
-        if (settingsWindow != null) settingsWindow.SetActive(true);
-        if (controlsWindow != null) controlsWindow.SetActive(false);
+        if (settingsWindow != null)
+        {
+            settingsWindow.SetActive(true);
+        }
+
+        if (controlsWindow != null)
+        {
+            controlsWindow.SetActive(false);
+        }
 
         ShowKeyboard();
     }
@@ -173,7 +199,10 @@ public class ControlsUI : MonoBehaviour
             ClearSelection();
         }
 
-        if (SoundManager.Instance != null) SoundManager.Instance.PlayOpen();
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayOpen();
+        }
     }
 
     public void CloseControls()
@@ -189,9 +218,15 @@ public class ControlsUI : MonoBehaviour
         controlsWindow.SetActive(false);
         settingsWindow.SetActive(true);
 
-        if (closedWithGamepad) SelectButton(controlsBtn);
+        if (closedWithGamepad)
+        {
+            SelectButton(controlsBtn);
+        }
 
-        if (SoundManager.Instance != null) SoundManager.Instance.PlayClose();
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayClose();
+        }
     }
 
     public void ShowKeyboard()
@@ -201,8 +236,15 @@ public class ControlsUI : MonoBehaviour
             return;
         }
 
-        if (keyboardGroup != null) keyboardGroup.SetActive(true);
-        if (gamepadGroup != null) gamepadGroup.SetActive(false);
+        if (keyboardGroup != null)
+        {
+            keyboardGroup.SetActive(true);
+        }
+
+        if (gamepadGroup != null)
+        {
+            gamepadGroup.SetActive(false);
+        }
 
         UpdateNavigation();
     }
@@ -214,8 +256,15 @@ public class ControlsUI : MonoBehaviour
             return;
         }
 
-        if (keyboardGroup != null) keyboardGroup.SetActive(false);
-        if (gamepadGroup != null) gamepadGroup.SetActive(true);
+        if (keyboardGroup != null)
+        {
+            keyboardGroup.SetActive(false);
+        }
+
+        if (gamepadGroup != null)
+        {
+            gamepadGroup.SetActive(true);
+        }
 
         UpdateNavigation();
     }
@@ -462,6 +511,7 @@ public class ControlsUI : MonoBehaviour
     private void FinishRebind(InputActionRebindingExtensions.RebindingOperation operation)
     {
         operation.Dispose();
+
         rebindOperation = null;
         currentBinding = null;
         previousOverridePath = null;
@@ -677,16 +727,38 @@ public class ControlsUI : MonoBehaviour
 
     private void ClearSelection()
     {
-        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 
     private void OnDestroy()
     {
-        if (controlsBtn != null) controlsBtn.onClick.RemoveListener(OpenControls);
-        if (keyboardTabBtn != null) keyboardTabBtn.onClick.RemoveListener(ShowKeyboard);
-        if (gamepadTabBtn != null) gamepadTabBtn.onClick.RemoveListener(ShowGamepad);
-        if (resetBtn != null) resetBtn.onClick.RemoveListener(ResetBindings);
-        if (backBtn != null) backBtn.onClick.RemoveListener(CloseControls);
+        if (controlsBtn != null)
+        {
+            controlsBtn.onClick.RemoveListener(OpenControls);
+        }
+
+        if (keyboardTabBtn != null)
+        {
+            keyboardTabBtn.onClick.RemoveListener(ShowKeyboard);
+        }
+
+        if (gamepadTabBtn != null)
+        {
+            gamepadTabBtn.onClick.RemoveListener(ShowGamepad);
+        }
+
+        if (resetBtn != null)
+        {
+            resetBtn.onClick.RemoveListener(ResetBindings);
+        }
+
+        if (backBtn != null)
+        {
+            backBtn.onClick.RemoveListener(CloseControls);
+        }
 
         foreach (BindingEntry entry in bindings)
         {
@@ -696,8 +768,19 @@ public class ControlsUI : MonoBehaviour
             }
         }
 
-        if (rebindOperation != null) rebindOperation.Dispose();
-        if (uiInputModule != null) uiInputModule.enabled = previousUIModuleEnabled;
-        if (runtimeActions != null) Destroy(runtimeActions);
+        if (rebindOperation != null)
+        {
+            rebindOperation.Dispose();
+        }
+
+        if (uiInputModule != null)
+        {
+            uiInputModule.enabled = previousUIModuleEnabled;
+        }
+
+        if (runtimeActions != null)
+        {
+            Destroy(runtimeActions);
+        }
     }
 }

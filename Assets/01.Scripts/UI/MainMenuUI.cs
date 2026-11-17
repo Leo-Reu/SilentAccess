@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -22,7 +22,6 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
-        // 메인 메뉴 진입 시 시간과 마우스 상태 초기화
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -35,6 +34,7 @@ public class MainMenuUI : MonoBehaviour
         SoundManager.Instance?.StopAllSFX();
         SoundManager.Instance?.PlayBGM(BGMType.MainMenu);
     }
+
     private void Start()
     {
         if (EventSystem.current != null)
@@ -117,10 +117,10 @@ public class MainMenuUI : MonoBehaviour
 
     public void StartGame()
     {
-        // 게임 씬으로 전환
         Time.timeScale = 1f;
         SceneManager.LoadScene(gameSceneName);
     }
+
     private void SelectButton(Button button)
     {
         if (button == null || EventSystem.current == null || !button.IsActive() || !button.IsInteractable())
@@ -134,7 +134,6 @@ public class MainMenuUI : MonoBehaviour
 
     public void QuitGame()
     {
-        // 에디터에서는 플레이 모드 종료
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

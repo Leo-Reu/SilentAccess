@@ -26,7 +26,7 @@ public class UIButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!enableHoverSound || !button.IsActive() || !button.IsInteractable())
+        if (!enableHoverSound || button == null || !button.IsActive() || !button.IsInteractable())
         {
             return;
         }
@@ -46,7 +46,7 @@ public class UIButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerDownHa
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!enableClickSound || eventData.button != PointerEventData.InputButton.Left || !button.IsActive() || !button.IsInteractable())
+        if (!enableClickSound || eventData.button != PointerEventData.InputButton.Left || button == null || !button.IsActive() || !button.IsInteractable())
         {
             return;
         }

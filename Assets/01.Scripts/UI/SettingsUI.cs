@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using TMPro;
 
 public class SettingsUI : MonoBehaviour
 {
@@ -31,7 +31,7 @@ public class SettingsUI : MonoBehaviour
     private const string ResolutionHeightKey = "SilentAccess.ResolutionHeight";
     private const string ScreenModeKey = "SilentAccess.ScreenMode";
     private const string MasterVolumeKey = "SilentAccess.MasterVolume";
-    private const string SFXVolumeKey = "SilentAccess.SFXVolume"; 
+    private const string SFXVolumeKey = "SilentAccess.SFXVolume";
     private const string BGMVolumeKey = "SilentAccess.BGMVolume";
 
     private readonly List<Vector2Int> resolutions = new List<Vector2Int>();
@@ -108,7 +108,10 @@ public class SettingsUI : MonoBehaviour
         {
             Vector2Int size = new Vector2Int(supportedResolutions[i].width, supportedResolutions[i].height);
 
-            if (size.x < 1280 || size.y < 720) continue;
+            if (size.x < 1280 || size.y < 720)
+            {
+                continue;
+            }
 
             if (!resolutions.Contains(size))
             {
@@ -257,7 +260,6 @@ public class SettingsUI : MonoBehaviour
         }
     }
 
-
     private void ApplyAudio(int masterVolume, int bgmVolume, int sfxVolume)
     {
         AudioListener.volume = masterVolume / 100f;
@@ -281,7 +283,6 @@ public class SettingsUI : MonoBehaviour
             }
         }
     }
-
 
     private void ApplySavedSettings()
     {
@@ -321,6 +322,7 @@ public class SettingsUI : MonoBehaviour
         ApplyDisplay(resolutionDropdown.value, screenMode);
         ApplyAudio(masterVolume, bgmVolume, sfxVolume);
     }
+
     public void Open()
     {
         if (settingsPanel == null || settingsPanel.activeSelf)
@@ -342,7 +344,6 @@ public class SettingsUI : MonoBehaviour
             SoundManager.Instance.PlayOpen();
         }
     }
-
 
     public void Close()
     {

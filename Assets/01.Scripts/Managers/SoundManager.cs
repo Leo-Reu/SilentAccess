@@ -25,9 +25,10 @@ public class SoundManager : MonoBehaviour
     private readonly Dictionary<SFXType, SFXData> sfxDict = new Dictionary<SFXType, SFXData>();
     private readonly Dictionary<BGMType, BGMData> bgmDict = new Dictionary<BGMType, BGMData>();
 
-    private AudioSource bgmSource;
     private AudioSource sfxSource;
+    private AudioSource bgmSource;
     private AudioSource downloadSource;
+
     private Coroutine bgmTransitionCoroutine;
 
     private float lastCCTVDetectionTime = float.NegativeInfinity;
@@ -85,7 +86,7 @@ public class SoundManager : MonoBehaviour
     {
         AudioSource[] sources = GetComponents<AudioSource>();
 
-        // 첫 번째 AudioSource : SFX
+        // SFX
         sfxSource = sources.Length > 0 ? sources[0] : gameObject.AddComponent<AudioSource>();
 
         sfxSource.playOnAwake = false;
@@ -95,7 +96,7 @@ public class SoundManager : MonoBehaviour
         sfxSource.pitch = 1f;
         sfxSource.outputAudioMixerGroup = sfxGroup;
 
-        // 두 번째 AudioSource : BGM
+        // BGM
         bgmSource = sources.Length > 1 ? sources[1] : gameObject.AddComponent<AudioSource>();
 
         bgmSource.playOnAwake = false;
@@ -104,7 +105,7 @@ public class SoundManager : MonoBehaviour
         bgmSource.volume = 1f;
         bgmSource.outputAudioMixerGroup = bgmGroup;
 
-        // 세 번째 AudioSource : 다운로드 진행음
+        // 다운로드 진행음
         downloadSource = sources.Length > 2 ? sources[2] : gameObject.AddComponent<AudioSource>();
 
         downloadSource.playOnAwake = false;
@@ -196,10 +197,18 @@ public class SoundManager : MonoBehaviour
 
         sfxSource.PlayOneShot(data.clip, data.volume);
     }
+
     public void StopAllSFX()
     {
-        if (sfxSource != null) sfxSource.Stop();
-        if (downloadSource != null) downloadSource.Stop();
+        if (sfxSource != null)
+        {
+            sfxSource.Stop();
+        }
+
+        if (downloadSource != null)
+        {
+            downloadSource.Stop();
+        }
     }
 
     public void PlaySFXAtPosition(SFXType type, Vector3 position)
@@ -213,6 +222,7 @@ public class SoundManager : MonoBehaviour
         soundObject.transform.position = position;
 
         AudioSource source = soundObject.AddComponent<AudioSource>();
+
         source.playOnAwake = false;
         source.loop = false;
         source.spatialBlend = 1f;
@@ -260,7 +270,6 @@ public class SoundManager : MonoBehaviour
     public void PlayConfirm() => PlaySFX(SFXType.Confirm);
     public void PlayError() => PlaySFX(SFXType.Error);
     public void PlayNotification() => PlaySFX(SFXType.Notification);
-
     public void PlayMissionSuccess() => PlaySFX(SFXType.MissionSuccess);
     public void PlayMissionFail() => PlaySFX(SFXType.MissionFail);
 
@@ -381,6 +390,7 @@ public class SoundManager : MonoBehaviour
         bgmSource.loop = true;
         bgmSource.Play();
     }
+
     public void StopBGM()
     {
         CancelBGMTransition();
@@ -391,6 +401,7 @@ public class SoundManager : MonoBehaviour
             bgmSource.volume = 1f;
         }
     }
+
     public void FadeOutBGM()
     {
         CancelBGMTransition();
