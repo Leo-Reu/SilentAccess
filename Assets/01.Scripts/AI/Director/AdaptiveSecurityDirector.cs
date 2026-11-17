@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
-using System.Collections.Generic;
 
 public enum SecurityLevel
 {
@@ -44,31 +44,20 @@ public class AdaptiveSecurityDirector : MonoBehaviour
     [SerializeField, Min(0f)] private float supportResolveTimeout = 30f;
 
     [Header("Level Response - Movement")]
-    [SerializeField, Min(1f)]
-    private float highAlertSpeedMultiplier = 1.1f;
+    [SerializeField, Min(1f)] private float highAlertSpeedMultiplier = 1.1f;
 
     [Header("Level Response - Patrol")]
-    [SerializeField, Range(0.1f, 1f)]
-    private float cautionPatrolWaitMultiplier = 0.75f;
-
-    [SerializeField, Range(0.1f, 1f)]
-    private float highAlertPatrolWaitMultiplier = 0.5f;
+    [SerializeField, Range(0.1f, 1f)] private float cautionPatrolWaitMultiplier = 0.75f;
+    [SerializeField, Range(0.1f, 1f)] private float highAlertPatrolWaitMultiplier = 0.5f;
 
     [Header("Level Response - Investigation")]
-    [SerializeField, Min(1f)]
-    private float cautionInvestigateTimeMultiplier = 1.25f;
-
-    [SerializeField, Min(1f)]
-    private float highAlertInvestigateTimeMultiplier = 1.5f;
+    [SerializeField, Min(1f)] private float cautionInvestigateTimeMultiplier = 1.25f;
+    [SerializeField, Min(1f)] private float highAlertInvestigateTimeMultiplier = 1.5f;
 
     [Header("Level Response - Search")]
-    [SerializeField, Min(1f)]
-    private float cautionSearchTimeMultiplier = 1.25f;
+    [SerializeField, Min(1f)] private float cautionSearchTimeMultiplier = 1.25f;
+    [SerializeField, Min(1f)] private float highAlertSearchTimeMultiplier = 1.75f;
 
-    [SerializeField, Min(1f)]
-    private float highAlertSearchTimeMultiplier = 1.75f;
-
-    public float BlockWatchDuration => blockWatchDuration;
     private float nextSupportTime;
     private float lastNoiseTime = -100f;
     private float nextDecayTime;
@@ -92,19 +81,15 @@ public class AdaptiveSecurityDirector : MonoBehaviour
     {
         public GuardController sourceGuard;
         public SupportTaskStatus status;
-        public SupportRole role;
     }
-
 
     private class SupportIncident
     {
-        public Vector3 lastKnownPosition;
         public float startTime;
         public float lastSearchEndTime = -1f;
 
         public readonly HashSet<GuardController> searchingGuards = new HashSet<GuardController>();
         public readonly HashSet<GuardController> supportSources = new HashSet<GuardController>();
-
         public readonly Dictionary<GuardController, SupportAssignment> supportAssignments = new Dictionary<GuardController, SupportAssignment>();
     }
 
@@ -113,28 +98,15 @@ public class AdaptiveSecurityDirector : MonoBehaviour
     public int Pressure { get; private set; }
     public SecurityLevel CurrentLevel { get; private set; } = SecurityLevel.Normal;
 
-    public float MoveSpeedMultiplier =>
-        CurrentLevel == SecurityLevel.HighAlert
-            ? highAlertSpeedMultiplier : 1f;
+    public float BlockWatchDuration => blockWatchDuration;
 
-    public float PatrolWaitMultiplier =>
-        CurrentLevel == SecurityLevel.HighAlert
-            ? highAlertPatrolWaitMultiplier :
-        CurrentLevel == SecurityLevel.Caution
-            ? cautionPatrolWaitMultiplier : 1f;
+    public float MoveSpeedMultiplier => CurrentLevel == SecurityLevel.HighAlert ? highAlertSpeedMultiplier : 1f;
 
-    public float InvestigateTimeMultiplier =>
-        CurrentLevel == SecurityLevel.HighAlert
-            ? highAlertInvestigateTimeMultiplier :
-        CurrentLevel == SecurityLevel.Caution
-            ? cautionInvestigateTimeMultiplier : 1f;
+    public float PatrolWaitMultiplier => CurrentLevel == SecurityLevel.HighAlert ? highAlertPatrolWaitMultiplier : CurrentLevel == SecurityLevel.Caution ? cautionPatrolWaitMultiplier : 1f;
 
-    public float SearchTimeMultiplier =>
-        CurrentLevel == SecurityLevel.HighAlert
-            ? highAlertSearchTimeMultiplier :
-        CurrentLevel == SecurityLevel.Caution
-            ? cautionSearchTimeMultiplier : 1f;
+    public float InvestigateTimeMultiplier => CurrentLevel == SecurityLevel.HighAlert ? highAlertInvestigateTimeMultiplier : CurrentLevel == SecurityLevel.Caution ? cautionInvestigateTimeMultiplier : 1f;
 
+    public float SearchTimeMultiplier => CurrentLevel == SecurityLevel.HighAlert ? highAlertSearchTimeMultiplier : CurrentLevel == SecurityLevel.Caution ? cautionSearchTimeMultiplier : 1f;
 
     private void OnEnable()
     {
@@ -247,7 +219,6 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         nextDecayTime = Time.time + decayDelay;
     }
 
-
     private void SetPressure(int value)
     {
         int nextPressure = Mathf.Clamp(value, 0, maxPressure);
@@ -273,13 +244,8 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         if (CurrentLevel != nextLevel)
         {
             CurrentLevel = nextLevel;
-
             RefreshGuardResponses();
-
-            Debug.Log($"[Director] Security Level: {CurrentLevel}");
         }
-
-        Debug.Log($"[Director] Pressure: {Pressure}");
     }
 
     private void RefreshGuardResponses()
@@ -297,7 +263,6 @@ public class AdaptiveSecurityDirector : MonoBehaviour
             }
         }
     }
-
 
     private void DispatchSupport(Vector3 targetPos, GuardController sourceGuard)
     {
@@ -321,96 +286,10 @@ public class AdaptiveSecurityDirector : MonoBehaviour
 
             if (i == 1)
             {
-                float bestScore = float.MaxValue;
-                float bestPathDistance = 0f;
-                float bestIncidentDistance = 0f;
-                Transform selectedPoint = null;
-                GuardController selectedRouteGuard = null;
-
-                foreach (GuardController routeGuard in guards)
+                if (TryFindBlockPosition(targetPos, sourceGuard, out Vector3 blockPosition))
                 {
-                    if (routeGuard == null || routeGuard.PatrolRoute == null)
-                    {
-                        continue;
-                    }
-
-                    for (int j = 0; j < routeGuard.PatrolRoute.Count; j++)
-                    {
-                        Transform waypoint = routeGuard.PatrolRoute.GetPoint(j);
-
-                        if (waypoint == null)
-                        {
-                            continue;
-                        }
-
-                        if (!NavMesh.SamplePosition(waypoint.position, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
-                        {
-                            continue;
-                        }
-
-                        float incidentDistance = Vector3.Distance(targetPos, hit.position);
-
-                        if (incidentDistance < blockMinDistance || incidentDistance > blockMaxDistance)
-                        {
-                            continue;
-                        }
-
-                        foreach (GuardController supportGuard in guards)
-                        {
-                            if (supportGuard == null || supportGuard == sourceGuard || !supportGuard.CanAssist)
-                            {
-                                continue;
-                            }
-
-                            NavMeshPath path = new NavMeshPath();
-
-                            if (!supportGuard.Agent.CalculatePath(hit.position, path) || path.status != NavMeshPathStatus.PathComplete)
-                            {
-                                continue;
-                            }
-
-                            Vector3[] corners = path.corners;
-
-                            if (corners.Length == 0)
-                            {
-                                continue;
-                            }
-
-                            float pathDistance = Vector3.Distance(supportGuard.transform.position, corners[0]);
-
-                            for (int k = 1; k < corners.Length; k++)
-                            {
-                                pathDistance += Vector3.Distance(corners[k - 1], corners[k]);
-                            }
-
-                            pathDistance += Vector3.Distance(corners[corners.Length - 1], hit.position);
-
-                            float score = pathDistance + Mathf.Abs(incidentDistance - blockIdealDistance) * blockDistancePenalty;
-
-                            if (score >= bestScore)
-                            {
-                                continue;
-                            }
-
-                            bestScore = score;
-                            bestPathDistance = pathDistance;
-                            bestIncidentDistance = incidentDistance;
-                            selectedPoint = waypoint;
-                            selectedRouteGuard = routeGuard;
-                            searchPos = hit.position;
-                        }
-                    }
-                }
-
-                if (selectedPoint != null && TryFindSafeBlockPosition(searchPos, out Vector3 safeBlockPosition))
-                {
-                    Vector3 originalPosition = searchPos;
-
-                    searchPos = safeBlockPosition;
+                    searchPos = blockPosition;
                     supportRole = SupportRole.Block;
-
-                    Debug.Log($"[Director] Tactical Block: {selectedRouteGuard.name}/{selectedPoint.name} / Path: {bestPathDistance:F1} / Distance: {bestIncidentDistance:F1} / Score: {bestScore:F1}");
-                    Debug.Log($"[Director] Block position adjusted: {originalPosition} → {searchPos}");
                 }
                 else
                 {
@@ -425,47 +304,7 @@ public class AdaptiveSecurityDirector : MonoBehaviour
                 }
             }
 
-            GuardController closestGuard = null;
-            float closestDistance = float.MaxValue;
-
-            foreach (GuardController guard in guards)
-            {
-                if (guard == null || guard == sourceGuard || !guard.CanAssist)
-                {
-                    continue;
-                }
-
-                NavMeshPath path = new NavMeshPath();
-
-                if (!guard.Agent.CalculatePath(searchPos, path) ||
-                    path.status != NavMeshPathStatus.PathComplete)
-                {
-                    continue;
-                }
-
-                Vector3[] corners = path.corners;
-
-                if (corners.Length == 0)
-                {
-                    continue;
-                }
-
-                float distance = Vector3.Distance(guard.transform.position, corners[0]);
-
-                for (int j = 1; j < corners.Length; j++)
-                {
-                    distance += Vector3.Distance(corners[j - 1], corners[j]);
-                }
-
-                distance += Vector3.Distance(corners[corners.Length - 1], searchPos);
-
-                if (distance < closestDistance)
-                {
-                    Debug.Log($"[Director] Support candidate: {guard.name} / Straight: {Vector3.Distance(guard.transform.position, searchPos):F1} / Path: {distance:F1}");
-                    closestDistance = distance;
-                    closestGuard = guard;
-                }
-            }
+            GuardController closestGuard = FindClosestSupportGuard(searchPos, sourceGuard);
 
             if (closestGuard == null)
             {
@@ -479,14 +318,11 @@ public class AdaptiveSecurityDirector : MonoBehaviour
                 SupportAssignment assignment = new SupportAssignment();
                 assignment.sourceGuard = sourceGuard;
                 assignment.status = SupportTaskStatus.Moving;
-                assignment.role = supportRole;
 
                 currentIncident.supportAssignments[closestGuard] = assignment;
             }
 
             dispatchedCount++;
-
-            Debug.Log($"[Director] Search support: {closestGuard.name} → {searchPos} / Role: {supportRole}");
         }
 
         if (dispatchedCount > 0)
@@ -495,6 +331,133 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         }
     }
 
+    private bool TryFindBlockPosition(Vector3 targetPos, GuardController sourceGuard, out Vector3 blockPosition)
+    {
+        blockPosition = targetPos;
+
+        float bestScore = float.MaxValue;
+        bool found = false;
+
+        foreach (GuardController routeGuard in guards)
+        {
+            if (routeGuard == null || routeGuard.PatrolRoute == null)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < routeGuard.PatrolRoute.Count; i++)
+            {
+                Transform waypoint = routeGuard.PatrolRoute.GetPoint(i);
+
+                if (waypoint == null)
+                {
+                    continue;
+                }
+
+                if (!NavMesh.SamplePosition(waypoint.position, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+                {
+                    continue;
+                }
+
+                float incidentDistance = Vector3.Distance(targetPos, hit.position);
+
+                if (incidentDistance < blockMinDistance || incidentDistance > blockMaxDistance)
+                {
+                    continue;
+                }
+
+                foreach (GuardController supportGuard in guards)
+                {
+                    if (supportGuard == null || supportGuard == sourceGuard || !supportGuard.CanAssist)
+                    {
+                        continue;
+                    }
+
+                    if (!TryGetPathDistance(supportGuard, hit.position, out float pathDistance))
+                    {
+                        continue;
+                    }
+
+                    float score = pathDistance + Mathf.Abs(incidentDistance - blockIdealDistance) * blockDistancePenalty;
+
+                    if (score >= bestScore)
+                    {
+                        continue;
+                    }
+
+                    bestScore = score;
+                    blockPosition = hit.position;
+                    found = true;
+                }
+            }
+        }
+
+        if (!found || !TryFindSafeBlockPosition(blockPosition, out Vector3 safePosition))
+        {
+            return false;
+        }
+
+        blockPosition = safePosition;
+        return true;
+    }
+
+    private GuardController FindClosestSupportGuard(Vector3 searchPos, GuardController sourceGuard)
+    {
+        GuardController closestGuard = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (GuardController guard in guards)
+        {
+            if (guard == null || guard == sourceGuard || !guard.CanAssist)
+            {
+                continue;
+            }
+
+            if (!TryGetPathDistance(guard, searchPos, out float distance))
+            {
+                continue;
+            }
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestGuard = guard;
+            }
+        }
+
+        return closestGuard;
+    }
+
+    // 지원 경비원은 직선 거리가 아닌 NavMesh 경로 길이를 기준으로 선정
+    private bool TryGetPathDistance(GuardController guard, Vector3 destination, out float distance)
+    {
+        distance = 0f;
+
+        NavMeshPath path = new NavMeshPath();
+
+        if (!guard.Agent.CalculatePath(destination, path) || path.status != NavMeshPathStatus.PathComplete)
+        {
+            return false;
+        }
+
+        Vector3[] corners = path.corners;
+
+        if (corners.Length == 0)
+        {
+            return false;
+        }
+
+        distance = Vector3.Distance(guard.transform.position, corners[0]);
+
+        for (int i = 1; i < corners.Length; i++)
+        {
+            distance += Vector3.Distance(corners[i - 1], corners[i]);
+        }
+
+        distance += Vector3.Distance(corners[corners.Length - 1], destination);
+
+        return true;
+    }
 
     private bool TryFindSafeBlockPosition(Vector3 waypointPosition, out Vector3 safePosition)
     {
@@ -569,7 +532,6 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         return bestClearance >= 0f;
     }
 
-
     public void ReportLostTarget(Vector3 lastKnownPos, GuardController sourceGuard)
     {
         if (missionController != null && missionController.CurrentResult != MissionResult.None)
@@ -586,18 +548,14 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         {
             currentIncident = new SupportIncident();
             currentIncident.startTime = Time.time;
-
-            Debug.Log("[Director] Incident started");
         }
 
-        currentIncident.lastKnownPosition = lastKnownPos;
         currentIncident.searchingGuards.Add(sourceGuard);
         currentIncident.supportSources.Add(sourceGuard);
         currentIncident.lastSearchEndTime = -1f;
 
         DispatchSupport(lastKnownPos, sourceGuard);
     }
-
 
     public void ReportSearchFinished(GuardController sourceGuard)
     {
@@ -609,8 +567,6 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         if (currentIncident.searchingGuards.Remove(sourceGuard) && currentIncident.searchingGuards.Count == 0)
         {
             currentIncident.lastSearchEndTime = Time.time;
-
-            Debug.Log("[Director] Incident resolving");
         }
     }
 
@@ -632,8 +588,6 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         }
 
         assignment.status = SupportTaskStatus.Investigating;
-
-        Debug.Log($"[Director] Support arrived: {supportGuard.name}");
     }
 
     private void UpdateSupportIncident()
@@ -693,8 +647,6 @@ public class AdaptiveSecurityDirector : MonoBehaviour
             }
         }
 
-        Debug.Log("[Director] Incident ended");
-
         currentIncident = null;
     }
 
@@ -736,14 +688,5 @@ public class AdaptiveSecurityDirector : MonoBehaviour
         }
 
         assignment.status = status;
-
-        if (status == SupportTaskStatus.Completed)
-        {
-            Debug.Log($"[Director] Support completed: {supportGuard.name}");
-        }
-        else if (status == SupportTaskStatus.Interrupted)
-        {
-            Debug.Log($"[Director] Support interrupted: {supportGuard.name}");
-        }
     }
 }

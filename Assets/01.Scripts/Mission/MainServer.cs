@@ -1,9 +1,9 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class MainServer : MonoBehaviour, IInteractable
 {
@@ -108,8 +108,6 @@ public class MainServer : MonoBehaviour, IInteractable
         SelectButton(closeBtn);
 
         SoundManager.Instance?.PlayDownloadProgress();
-
-        Debug.Log("[MainServer] Download started");
     }
 
     private void CompleteDownload()
@@ -121,8 +119,6 @@ public class MainServer : MonoBehaviour, IInteractable
         SoundManager.Instance?.PlayDownloadComplete();
 
         UpdateUI();
-
-        Debug.Log("[MainServer] Data theft completed");
         OnDataStolen?.Invoke();
     }
 
@@ -168,8 +164,6 @@ public class MainServer : MonoBehaviour, IInteractable
             downloadTimer = 0f;
 
             SoundManager.Instance?.StopDownloadProgress();
-
-            Debug.Log("[MainServer] Download cancelled");
         }
 
         ClearSelectedButton();

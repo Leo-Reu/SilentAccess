@@ -11,7 +11,6 @@ public class GuardInvestigateState : IState<GuardController>
     public void Enter(GuardController owner)
     {
         originalUpdateRotation = owner.Agent.updateRotation;
-
         owner.SetMoveSpeed(owner.Data.investigateSpeed);
 
         UpdateTarget(owner);
@@ -59,8 +58,6 @@ public class GuardInvestigateState : IState<GuardController>
                 blockLookYaw = lookDirection.sqrMagnitude > 0.01f ? Quaternion.LookRotation(lookDirection).eulerAngles.y : owner.transform.eulerAngles.y;
 
                 owner.Agent.updateRotation = false;
-
-                Debug.Log($"[Director] Block watching: {owner.name}");
             }
         }
 

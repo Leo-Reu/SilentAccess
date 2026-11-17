@@ -1,5 +1,4 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CCTVController : MonoBehaviour
 {
@@ -63,16 +62,7 @@ public class CCTVController : MonoBehaviour
 
         if (detection >= cctvData.detectionThreshold && !isAlertSent)
         {
-            isAlertSent = true;
-
-            SoundManager.Instance?.PlayCCTVDetection();
-
-            if (securityDirector != null)
-            {
-                securityDirector.ReportCCTV();
-            }
-
-            AlertGuards();
+            SendDetectionAlert();
         }
 
         if (!isPlayerVisible && detection <= 0f)
@@ -124,6 +114,20 @@ public class CCTVController : MonoBehaviour
         }
 
         detection = Mathf.Clamp(detection, 0f, cctvData.detectionThreshold);
+    }
+
+    private void SendDetectionAlert()
+    {
+        isAlertSent = true;
+
+        SoundManager.Instance?.PlayCCTVDetection();
+
+        if (securityDirector != null)
+        {
+            securityDirector.ReportCCTV();
+        }
+
+        AlertGuards();
     }
 
     private void AlertGuards()

@@ -18,11 +18,7 @@ public class GuardPatrolRouteEditor : Editor
     {
         serializedObject.Update();
 
-        EditorGUILayout.HelpBox(
-            "Scene View에서 Shift + 좌클릭으로 Waypoint를 추가하세요.\n" +
-            "Waypoint를 선택하면 기존 Move Tool로 이동할 수 있습니다.",
-            MessageType.Info
-        );
+        EditorGUILayout.HelpBox("Scene View에서 Shift + 좌클릭으로 Waypoint를 추가하세요.\nWaypoint를 선택하면 기존 Move Tool로 이동할 수 있습니다.", MessageType.Info);
 
         EditorGUILayout.Space(5);
         EditorGUILayout.LabelField("Patrol Waypoints", EditorStyles.boldLabel);
@@ -183,6 +179,16 @@ public class GuardPatrolRouteEditor : Editor
         SceneView.RepaintAll();
     }
 
+    private bool IsWaypointValid(Transform point)
+    {
+        if (point == null)
+        {
+            return false;
+        }
+
+        return NavMesh.SamplePosition(point.position, out NavMeshHit hit, 0.5f, NavMesh.AllAreas) && Vector3.Distance(point.position, hit.position) < 0.5f;
+    }
+
     private void DrawWaypoints()
     {
         serializedObject.Update();
@@ -205,19 +211,12 @@ public class GuardPatrolRouteEditor : Editor
                 continue;
             }
 
-            bool valid = NavMesh.SamplePosition(point.position, out NavMeshHit hit, 0.5f, NavMesh.AllAreas)
-                && Vector3.Distance(point.position, hit.position) < 0.5f;
+            bool valid = IsWaypointValid(point);
 
             Handles.color = valid ? Color.cyan : Color.red;
-
             Handles.SphereHandleCap(0, point.position, Quaternion.identity, 0.4f, EventType.Repaint);
-
-            Handles.Label(
-                point.position + Vector3.up * 0.4f,
-                $"WP {i:00}" + (valid ? "" : " - Off NavMesh")
-            );
+            Handles.Label(point.position + Vector3.up * 0.4f, $"WP {i:00}" + (valid ? "" : " - Off NavMesh"));
         }
-
 
         if (count >= 2)
         {
@@ -238,11 +237,8 @@ public class GuardPatrolRouteEditor : Editor
                     continue;
                 }
 
-                bool currentValid = NavMesh.SamplePosition(current.position, out NavMeshHit currentHit, 0.5f, NavMesh.AllAreas)
-                    && Vector3.Distance(current.position, currentHit.position) < 0.5f;
-
-                bool nextValid = NavMesh.SamplePosition(next.position, out NavMeshHit nextHit, 0.5f, NavMesh.AllAreas)
-                    && Vector3.Distance(next.position, nextHit.position) < 0.5f;
+                bool currentValid = IsWaypointValid(current);
+                bool nextValid = IsWaypointValid(next);
 
                 Handles.color = currentValid && nextValid ? Color.cyan : Color.red;
 
@@ -254,7 +250,6 @@ public class GuardPatrolRouteEditor : Editor
                 Handles.ArrowHandleCap(0, arrowPos, rotation, 0.6f, EventType.Repaint);
             }
         }
-
 
         Handles.color = previousColor;
     }

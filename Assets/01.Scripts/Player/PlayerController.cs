@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
-
         Vector3 moveDir = transform.right * input.x + transform.forward * input.y;
 
         float currentSpeed;

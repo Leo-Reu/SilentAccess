@@ -25,9 +25,5 @@ public class GuardHearing : MonoBehaviour
         }
 
         OnNoiseHeard?.Invoke(noiseData);
-
-#if UNITY_EDITOR
-        Debug.Log($"{name} heard {noiseData.type} noise / Distance: {distance:F1}");
-#endif
     }
 }

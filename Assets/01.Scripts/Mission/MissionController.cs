@@ -1,6 +1,6 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public enum MissionPhase
@@ -34,9 +34,9 @@ public class MissionController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool debugInvincible;
 
-    public bool DebugInvincible => Application.isEditor && debugInvincible;
-
     private static bool retryFromEscape;
+
+    public bool DebugInvincible => Application.isEditor && debugInvincible;
 
     public MissionPhase CurrentPhase { get; private set; } = MissionPhase.Infiltration;
     public bool IsSecurityAlertActive { get; private set; }
@@ -96,9 +96,6 @@ public class MissionController : MonoBehaviour
         CurrentPhase = MissionPhase.Escape;
         IsSecurityAlertActive = true;
 
-        Debug.Log("[MissionController] Phase changed to Escape");
-        Debug.Log("[MissionController] Security Alert activated");
-
         OnPhaseChanged?.Invoke(CurrentPhase);
         OnSecurityAlertTriggered?.Invoke();
 
@@ -155,8 +152,6 @@ public class MissionController : MonoBehaviour
         }
 
         closestGuard.OnSecurityAlert(serverInvestigationPoint.position);
-
-        Debug.Log($"[MissionController] {closestGuard.name} dispatched to server room");
     }
 
     public void CompleteMission()
@@ -169,9 +164,6 @@ public class MissionController : MonoBehaviour
         CurrentResult = MissionResult.Success;
 
         SoundManager.Instance?.FadeOutBGM();
-
-        Debug.Log("[MissionController] Mission Complete");
-
         OnMissionEnded?.Invoke(CurrentResult);
     }
 
@@ -185,9 +177,6 @@ public class MissionController : MonoBehaviour
         CurrentResult = MissionResult.Failed;
 
         SoundManager.Instance?.FadeOutBGM();
-
-        Debug.Log("[MissionController] Mission Failed");
-
         OnMissionEnded?.Invoke(CurrentResult);
     }
 
@@ -248,8 +237,6 @@ public class MissionController : MonoBehaviour
         mainServer.RestoreDataTheft();
 
         HandleDataStolen();
-
-        Debug.Log("[MissionController] Escape checkpoint restored");
     }
 
     public void SetDebugInvincible(bool value)

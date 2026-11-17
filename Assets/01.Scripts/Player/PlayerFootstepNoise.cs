@@ -71,6 +71,7 @@ public class PlayerFootstepNoise : MonoBehaviour
         NoiseSystem.GenerateNoise(transform.position, noiseRadius, NoiseType.Footstep);
         PlayFootstep();
     }
+
     private void PlayFootstep()
     {
         if (footstepAudioSource == null)
@@ -102,5 +103,4 @@ public class PlayerFootstepNoise : MonoBehaviour
     {
         stepTimer = 0f;
     }
-
 }

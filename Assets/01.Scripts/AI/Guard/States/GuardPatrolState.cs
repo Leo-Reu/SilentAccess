@@ -7,7 +7,6 @@ public class GuardPatrolState : IState<GuardController>
     public void Enter(GuardController owner)
     {
         owner.SetMoveSpeed(owner.Data.patrolSpeed);
-
         waitTimer = 0f;
 
         MoveToPoint(owner);
@@ -53,7 +52,6 @@ public class GuardPatrolState : IState<GuardController>
         }
 
         owner.NextPatrolPoint();
-
         waitTimer = 0f;
 
         MoveToPoint(owner);

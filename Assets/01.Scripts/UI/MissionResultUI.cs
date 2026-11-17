@@ -1,8 +1,8 @@
-﻿using TMPro;
+﻿using System.Collections;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class MissionResultUI : MonoBehaviour
 {
@@ -71,10 +71,6 @@ public class MissionResultUI : MonoBehaviour
         if (resultText != null)
         {
             resultText.color = isSuccess ? new Color32(100, 226, 179, 255) : new Color32(250, 114, 121, 255);
-        }
-
-        if (resultText != null)
-        {
             resultText.text = isSuccess ? "미션 성공" : "미션 실패";
         }
 
@@ -84,10 +80,8 @@ public class MissionResultUI : MonoBehaviour
         }
 
         resultPanel.SetActive(true);
-
         StartCoroutine(SelectRetryButton());
 
-        // 미션 결과에 따라 성공 또는 실패 효과음 재생
         if (SoundManager.Instance != null)
         {
             if (isSuccess)
