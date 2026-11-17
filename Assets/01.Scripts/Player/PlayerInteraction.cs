@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -22,24 +22,25 @@ public class PlayerInteraction : MonoBehaviour
     private PlayerLook playerLook;
     private PlayerFootstepNoise footstepNoise;
 
-    private bool canInteract = true;
-    public bool CanInteract => canInteract;
-    public int LastControlEnabledFrame { get; private set; } = -1;
-
     private InputAction interactAction;
     private InputAction throwAction;
 
-    private string lastControlScheme;
-
     private ThrowableObject heldObject;
+    private string lastControlScheme;
+    private bool canInteract = true;
+
+    public bool CanInteract => canInteract;
+    public int LastControlEnabledFrame { get; private set; } = -1;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+
         if (playerInput != null)
         {
             InputBindingSave.Load(playerInput.actions);
         }
+
         playerController = GetComponent<PlayerController>();
         playerLook = GetComponent<PlayerLook>();
         footstepNoise = GetComponent<PlayerFootstepNoise>();
@@ -78,7 +79,6 @@ public class PlayerInteraction : MonoBehaviour
             Throw();
         }
     }
-
 
     private void Interact()
     {
@@ -137,7 +137,6 @@ public class PlayerInteraction : MonoBehaviour
         Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
         Cursor.visible = !value;
     }
-
 
     private bool TryGetInteractable(out IInteractable interactable, out InteractionPromptData promptData)
     {
@@ -205,6 +204,7 @@ public class PlayerInteraction : MonoBehaviour
             RefreshInteractionKeyText();
         }
     }
+
     private void RefreshInteractionKeyText()
     {
         if (interactionKeyText == null || interactAction == null || playerInput == null)

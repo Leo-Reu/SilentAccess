@@ -9,26 +9,27 @@ public class CCTVRangeVisualizer : MonoBehaviour
     [Header("Option")]
     [SerializeField] private bool showRange = true;
 
+    [Header("Display")]
+    [SerializeField] private float groundY = 0.05f;
+
     private CCTVData cctvData;
     private Transform eyePoint;
     private LayerMask obstacleMask;
 
-    [Header("Display")]
-    [SerializeField] private float groundY = 0.05f;
-
     private LineRenderer lineRenderer;
-    public void Configure(CCTVData data, Transform eye, LayerMask obstacles)
-    {
-        cctvData = data;
-        eyePoint = eye;
-        obstacleMask = obstacles;
-    }
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.useWorldSpace = true;
         lineRenderer.loop = false;
+    }
+
+    public void Configure(CCTVData data, Transform eye, LayerMask obstacles)
+    {
+        cctvData = data;
+        eyePoint = eye;
+        obstacleMask = obstacles;
     }
 
     private void LateUpdate()
@@ -45,7 +46,12 @@ public class CCTVRangeVisualizer : MonoBehaviour
 
     private void DrawRange()
     {
-        lineRenderer.positionCount = segmentCount + 3;
+        int pointCount = segmentCount + 3;
+
+        if (lineRenderer.positionCount != pointCount)
+        {
+            lineRenderer.positionCount = pointCount;
+        }
 
         float viewDistance = cctvData.visionRange;
         float viewAngle = cctvData.visionAngle;

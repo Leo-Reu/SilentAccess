@@ -17,8 +17,6 @@ public class PlayerInventory : MonoBehaviour
         HasKeycard = true;
         OnKeycardCollected?.Invoke();
 
-        Debug.Log("카드키 획득");
-
         return true;
     }
 }

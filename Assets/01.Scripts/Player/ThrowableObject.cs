@@ -46,7 +46,6 @@ public class ThrowableObject : MonoBehaviour, IInteractable
 
         canMakeNoise = true;
 
-        // 투척 효과음 재생
         SoundManager.Instance?.PlaySFXAtPosition(SFXType.Throw, transform.position);
 
         rb.AddForce(dir * force, ForceMode.Impulse);
@@ -62,11 +61,8 @@ public class ThrowableObject : MonoBehaviour, IInteractable
         canMakeNoise = false;
 
         NoiseSystem.GenerateNoise(transform.position, noiseRadius, NoiseType.ThrownObject);
-
-        // 충돌 위치에서 3D 효과음 재생
         SoundManager.Instance?.PlaySFXAtPosition(SFXType.ThrowImpact, transform.position);
     }
-
 
     private void OnDrawGizmosSelected()
     {
